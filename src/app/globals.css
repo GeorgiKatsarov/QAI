@@ -139,7 +139,7 @@ a.btn-primary:hover {
 /* ── Home collage slideshow ──────────────────────────────────────────────── */
 .home-collage-slide {
   opacity: 0;
-  filter: blur(0.9px) saturate(0.98);
+  filter: blur(1.5px) saturate(0.95);
   transform: scale(1.04);
   animation: collage-fade 24s infinite;
 }

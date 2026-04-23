@@ -127,7 +127,11 @@ export function MapProximityView({ events }: { events: EventCardDto[] }) {
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 p-4" data-testid="map-container">
-          <CityMapView events={visibleEvents} />
+          <CityMapView
+            events={visibleEvents}
+            focusLocation={userLocation}
+            focusRadiusKm={userLocation ? radiusKm : undefined}
+          />
         </div>
 
         <aside className="w-96 border-l border-border overflow-y-auto">
