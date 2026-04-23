@@ -61,7 +61,7 @@ export default async function MapPage({
           name="search"
           defaultValue={typeof params.search === "string" ? params.search : ""}
           type="text"
-          placeholder="Search events..."
+          placeholder="Търси събития..."
           className="flex-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm shadow-sm placeholder:text-muted-foreground"
           data-testid="map-search-input"
         />
@@ -71,7 +71,7 @@ export default async function MapPage({
           className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           data-testid="map-filter-city"
         >
-          <option value="">All cities</option>
+          <option value="">Всички градове</option>
           {cityOptions.map((city) => (
             <option key={city} value={city}>
               {city}
@@ -84,14 +84,14 @@ export default async function MapPage({
           className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           data-testid="map-filter-category"
         >
-          <option value="">All categories</option>
-          <option value="music">Music</option>
-          <option value="art">Art</option>
-          <option value="food">Food</option>
-          <option value="sports">Sports</option>
-          <option value="family">Family</option>
+          <option value="">Всички категории</option>
+          <option value="music">Музика</option>
+          <option value="art">Изкуство</option>
+          <option value="food">Храна</option>
+          <option value="sports">Спорт</option>
+          <option value="family">Семейни</option>
         </select>
-        <button className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground">Apply</button>
+        <button className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground">Приложи</button>
       </form>
 
       <MapProximityView events={filteredItems} />

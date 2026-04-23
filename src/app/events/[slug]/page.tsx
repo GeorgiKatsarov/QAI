@@ -18,16 +18,16 @@ export default async function EventDetailsPage({
   return (
     <div className="container mx-auto max-w-3xl px-4 py-10" data-testid="event-details-page">
       <Link href="/map" className="text-sm text-muted-foreground hover:underline">
-        Back to events
+        Назад към събитията
       </Link>
       <h1 className="mt-3 text-3xl font-semibold" data-testid="event-title">
         {event.title}
       </h1>
       <p className="mt-2 text-muted-foreground" data-testid="event-date">
-        {new Date(event.startDateTime).toLocaleString()}
+        {new Date(event.startDateTime).toLocaleString("bg-BG")}
       </p>
       <p className="text-muted-foreground" data-testid="event-venue">
-        {event.venueName ?? "Venue TBD"} · {event.city}
+        {event.venueName ?? "Мястото се уточнява"} · {event.city}
       </p>
       {event.imageUrl ? (
         <Image
@@ -40,7 +40,7 @@ export default async function EventDetailsPage({
         />
       ) : null}
       <p className="mt-6 text-lg leading-8">
-        {event.description ?? event.summary ?? "No additional event description is available yet."}
+        {event.description ?? event.summary ?? "Все още няма допълнително описание за това събитие."}
       </p>
       {event.sourceUrl ? (
         <a
@@ -50,11 +50,11 @@ export default async function EventDetailsPage({
           className="inline-block mt-6 text-sm hover:underline"
           data-testid="event-source-link"
         >
-          View original source
+          Виж оригиналния източник
         </a>
       ) : (
         <p className="mt-6 text-sm text-muted-foreground" data-testid="event-source-link">
-          Source link unavailable
+          Няма наличен линк към източника
         </p>
       )}
     </div>

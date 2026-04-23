@@ -9,11 +9,11 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const showNavbar = pathname !== "/";
+  const hideNavbar = pathname === "/";
 
   return (
     <>
-      {showNavbar ? <Navbar /> : null}
+      {!hideNavbar ? <Navbar /> : null}
       <main className="flex-1">{children}</main>
     </>
   );

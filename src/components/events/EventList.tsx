@@ -5,7 +5,7 @@ export function EventList({ events, testIdPrefix }: { events: EventCardDto[]; te
   if (!events.length) {
     return (
       <p className="text-sm text-muted-foreground" data-testid={`${testIdPrefix}-empty-state`}>
-        No events match your current filters.
+        Няма събития, които да отговарят на текущите филтри.
       </p>
     );
   }
@@ -18,9 +18,9 @@ export function EventList({ events, testIdPrefix }: { events: EventCardDto[]; te
             {event.title}
           </Link>
           <p className="text-sm text-muted-foreground">
-            {new Date(event.startDateTime).toLocaleString()} · {event.city}
+            {new Date(event.startDateTime).toLocaleString("bg-BG")} · {event.city}
           </p>
-          <p className="text-sm text-muted-foreground">{event.summary ?? "No summary provided."}</p>
+          <p className="text-sm text-muted-foreground">{event.summary ?? "Няма кратко описание."}</p>
         </li>
       ))}
     </ul>
