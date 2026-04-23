@@ -21,9 +21,21 @@ const LeafletMap = dynamic(
 
 interface Props {
   events: EventCardDto[];
+  focusLocation?: {
+    latitude: number;
+    longitude: number;
+  } | null;
+  focusRadiusKm?: number;
   onSelectEvent?: (event: EventCardDto) => void;
 }
 
-export function MapWrapper({ events, onSelectEvent }: Props) {
-  return <LeafletMap events={events} onSelectEvent={onSelectEvent} />;
+export function MapWrapper({ events, focusLocation, focusRadiusKm, onSelectEvent }: Props) {
+  return (
+    <LeafletMap
+      events={events}
+      focusLocation={focusLocation}
+      focusRadiusKm={focusRadiusKm}
+      onSelectEvent={onSelectEvent}
+    />
+  );
 }
