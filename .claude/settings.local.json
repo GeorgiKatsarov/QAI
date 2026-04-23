@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-git)",
+      "Bash(npx create-next-app@latest roamer --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-git)",
+      "Bash(npm install *)",
+      "Bash(npx playwright *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(npx prisma *)"
+    ]
+  }
+}

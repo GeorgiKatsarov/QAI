@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum EventStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TrustLevel {
+  LOW
+  MEDIUM
+  HIGH
+  TRUSTED
+}
+
+enum AdminRole {
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum NotificationFrequency {
+  DAILY
+  WEEKLY
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model Category {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  slug   String  @unique
+  color  String? // optional accent colour for UI chips
+  events Event[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  events Event[] @relation("EventTags")
+
+  @@map("tags")
+}
+
+model Source {
+  id              String     @id @default(cuid())
+  name            String     @unique
+  baseUrl         String
+  trustLevel      TrustLevel @default(MEDIUM)
+  scrapingEnabled Boolean    @default(false)
+  events          Event[]
+  createdAt       DateTime   @default(now())
+
+  @@map("sources")
+}
+
+model Event {
+  id            String      @id @default(cuid())
+  title         String
+  slug          String      @unique
+  summary       String?
+  description   String?
+  startDateTime DateTime
+  endDateTime   DateTime?
+  venueName     String?
+  address       String?
+  city          String
+  latitude      Float?
+  longitude     Float?
+  categoryId    String?
+  category      Category?   @relation(fields: [categoryId], references: [id])
+  tags          Tag[]       @relation("EventTags")
+  sourceId      String?
+  source        Source?     @relation(fields: [sourceId], references: [id])
+  sourceUrl     String?
+  imageUrl      String?
+  priceMin      Float?
+  priceMax      Float?
+  currency      String      @default("BGN")
+  isFree        Boolean     @default(false)
+  isFamilyFriendly Boolean  @default(false)
+  isOutdoor     Boolean     @default(false)
+  status        EventStatus @default(DRAFT)
+  featured      Boolean     @default(false)
+  fingerprint   String?     @unique // dedup key for scraped events
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([status])
+  @@index([city])
+  @@index([startDateTime])
+  @@index([categoryId])
+  @@index([status, startDateTime])
+  @@index([status, city])
+  @@index([status, city, startDateTime])
+  @@map("events")
+}
+
+model Submission {
+  id             String           @id @default(cuid())
+  // Stores the raw form payload; a proper Event is created on approval
+  eventDraftData Json
+  submitterEmail String
+  status         SubmissionStatus @default(PENDING)
+  reviewNotes    String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([status])
+  @@index([submitterEmail])
+  @@map("submissions")
+}
+
+model NotificationSubscription {
+  id                String                @id @default(cuid())
+  email             String
+  // Stored as plain city name strings (e.g. "Sofia", "Plovdiv")
+  cities            String[]
+  // Stored as Category.id strings for flexibility
+  categoryIds       String[]
+  priceMax          Float?
+  freeOnly          Boolean               @default(false)
+  frequency         NotificationFrequency @default(WEEKLY)
+  isConfirmed       Boolean               @default(false)
+  confirmationToken String                @unique @default(cuid())
+  unsubscribeToken  String                @unique @default(cuid())
+  lastNotifiedAt    DateTime?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+
+  @@index([email])
+  @@index([isConfirmed])
+  @@map("notification_subscriptions")
+}
+
+model AdminUser {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  role      AdminRole  @default(ADMIN)
+  auditLogs AuditLog[]
+  createdAt DateTime   @default(now())
+
+  @@map("admin_users")
+}
+
+model AuditLog {
+  id         String    @id @default(cuid())
+  actorId    String
+  actor      AdminUser @relation(fields: [actorId], references: [id])
+  action     String    // e.g. "APPROVE_EVENT", "REJECT_SUBMISSION"
+  targetType String    // e.g. "Event", "Submission"
+  targetId   String
+  metadata   Json?
+  createdAt  DateTime  @default(now())
+
+  @@index([actorId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
