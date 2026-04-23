@@ -1,7 +1,6 @@
 import { listPublicEvents } from "@/lib/services/events";
 import { scrapeVisitMyBulgariaEvents } from "@/lib/services/visitMyBulgaria";
-import { EventList } from "@/components/events/EventList";
-import { CityMapView } from "@/components/map/CityMapView";
+import { MapProximityView } from "@/components/map/MapProximityView";
 import type { EventCardDto } from "@/lib/mappers/events";
 
 function filterEvents(
@@ -95,17 +94,7 @@ export default async function MapPage({
         <button className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground">Apply</button>
       </form>
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 p-4" data-testid="map-container">
-          <CityMapView events={filteredItems} />
-        </div>
-
-        <aside className="w-96 border-l border-border overflow-y-auto">
-          <div className="p-4 space-y-3" data-testid="map-results-list">
-            <EventList events={filteredItems} testIdPrefix="map" />
-          </div>
-        </aside>
-      </div>
+      <MapProximityView events={filteredItems} />
     </div>
   );
 }
