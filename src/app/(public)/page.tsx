@@ -8,7 +8,6 @@ const cards = [
     icon: Map,
     label: "Map View",
     sub: "Browse by location",
-    gradient: "from-[#4A9ADE] to-[#7BBDE8]",
   },
   {
     href: "/calendar",
@@ -16,7 +15,6 @@ const cards = [
     icon: Calendar,
     label: "Calendar View",
     sub: "Browse by date",
-    gradient: "from-[#6BB5E8] to-[#A8D8F5]",
   },
   {
     href: "/submit",
@@ -24,7 +22,6 @@ const cards = [
     icon: Send,
     label: "Submit an Event",
     sub: "Add your event",
-    gradient: "from-[#D778B8] to-[#F0A7D0]",
   },
   {
     href: "/notifications",
@@ -32,7 +29,6 @@ const cards = [
     icon: Bell,
     label: "Get Notified",
     sub: "Event digests by email",
-    gradient: "from-[#B07FD8] to-[#D4A8F0]",
   },
 ];
 
@@ -124,6 +120,29 @@ export default function HomePage() {
               href={href}
               data-testid={testId}
               className={`bg-gradient-to-br ${gradient} flex flex-col items-center gap-3 rounded-2xl p-7 text-center text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-xl`}
+            >
+              <span className="flex size-11 items-center justify-center rounded-xl bg-white/25">
+                <Icon className="size-5" />
+              </span>
+              <div>
+                <p className="text-base font-bold">{label}</p>
+                <p className="text-sm opacity-80">{sub}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="absolute inset-0 bg-[#0f2740]/35 backdrop-blur-sm" />
+
+      <div className="relative z-10 container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-white">
+        <div className="grid w-full max-w-lg grid-cols-2 gap-5">
+          {cards.map(({ href, testId, icon: Icon, label, sub }) => (
+            <Link
+              key={href}
+              href={href}
+              data-testid={testId}
+              className="flex flex-col items-center gap-3 rounded-2xl border border-white/30 bg-[#4a8ccf]/85 p-7 text-center text-white shadow-lg shadow-[#0f2740]/40 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-[#5b9fe3]/90 hover:shadow-xl"
             >
               <span className="flex size-11 items-center justify-center rounded-xl bg-white/25">
                 <Icon className="size-5" />
