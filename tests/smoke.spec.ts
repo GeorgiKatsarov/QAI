@@ -143,3 +143,32 @@ test.describe("Notification form fields", () => {
     await expect(page.getByTestId("subscription-submit-button")).toBeVisible();
   });
 });
+
+
+test.describe("Event discovery and details", () => {
+  test("map renders seeded/mock event cards", async ({ page }) => {
+    await page.goto("/map");
+    await expect(page.getByTestId("map-results-list").locator('[data-testid^="event-card-"]')).toHaveCount(3);
+  });
+
+  test("event details route opens from map card", async ({ page }) => {
+    await page.goto("/map");
+    await page.getByTestId("event-card-evt-sofia-jazz").getByRole("link").click();
+    await expect(page.getByTestId("event-details-page")).toBeVisible();
+    await expect(page.getByTestId("event-title")).toBeVisible();
+    await expect(page.getByTestId("event-date")).toBeVisible();
+  });
+});
+
+test.describe("Submit flow", () => {
+  test("valid submission succeeds", async ({ page }) => {
+    await page.goto("/submit");
+    await page.getByTestId("submit-title-input").fill("Playwright Test Event");
+    await page.getByTestId("submit-date-input").fill("2026-05-25T19:30");
+    await page.getByTestId("submit-city-input").fill("Sofia");
+    await page.getByTestId("submit-category-input").selectOption("music");
+    await page.getByTestId("submit-email-input").fill("test@example.com");
+    await page.getByTestId("submit-button").click();
+    await expect(page.getByTestId("submit-success")).toBeVisible();
+  });
+});
