@@ -1,4 +1,4 @@
-# Event Map Web App Blueprint
+# Roamer Web App Blueprint
 
 ## 1. Product Goal
 
