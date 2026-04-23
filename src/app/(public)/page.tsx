@@ -97,6 +97,29 @@ export default async function HomePage() {
           ))}
         </div>
       </div>
+
+      <div className="absolute inset-0 bg-[#d8e8e2]/38 backdrop-blur-[1.5px]" />
+
+      <div className="relative z-10 container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-white">
+        <div className="grid w-full max-w-lg grid-cols-2 gap-5">
+          {cards.map(({ href, testId, icon: Icon, label, sub }) => (
+            <Link
+              key={href}
+              href={href}
+              data-testid={testId}
+              className="flex flex-col items-center gap-3 rounded-2xl border border-white/70 bg-white/42 p-7 text-center text-white shadow-xl shadow-[#4b6660]/20 backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/52 hover:shadow-2xl"
+            >
+              <span className="flex size-11 items-center justify-center rounded-xl bg-white/25">
+                <Icon className="size-5" />
+              </span>
+              <div>
+                <p className="text-base font-bold">{label}</p>
+                <p className="text-sm text-white/90">{sub}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
