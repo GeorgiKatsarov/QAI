@@ -45,6 +45,8 @@ export default async function HomePage() {
   const events = await listPublicEvents({ page: 1, pageSize: 24 });
   const eventSlides = [...new Set(events.items.map((event) => event.imageUrl).filter(Boolean))] as string[];
   const slides = eventSlides.length >= 3 ? eventSlides.slice(0, 8) : fallbackSlides;
+  const slideDurationSeconds = 6;
+  const totalSlideshowDurationSeconds = Math.max(slides.length * slideDurationSeconds, 18);
 
   return (
     <div
@@ -57,7 +59,8 @@ export default async function HomePage() {
             key={`${imageUrl}-${slideIndex}`}
             className="absolute inset-0 home-photo-slide"
             style={{
-              animationDelay: `${slideIndex * 5}s`,
+              animationDelay: `-${slideIndex * slideDurationSeconds}s`,
+              animationDuration: `${totalSlideshowDurationSeconds}s`,
               backgroundImage: `url(${imageUrl})`,
             }}
           />
@@ -69,6 +72,15 @@ export default async function HomePage() {
       <div className="absolute inset-0 bg-[#d8e8e2]/38 backdrop-blur-[1.5px]" />
 
       <div className="relative z-10 container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-white">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight drop-shadow-md md:text-5xl">
+            Платформа за културни събития
+          </h1>
+          <p className="mt-2 text-base text-white/90 md:text-lg">
+            Открий, добави и следи фестивали и местни празници в България.
+          </p>
+        </div>
+
         <div className="grid w-full max-w-lg grid-cols-2 gap-5">
           {cards.map(({ href, testId, icon: Icon, label, sub }) => (
             <Link
