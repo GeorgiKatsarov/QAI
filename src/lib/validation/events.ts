@@ -31,3 +31,17 @@ export const submitEventSchema = z.object({
 });
 
 export type SubmitEventInput = z.infer<typeof submitEventSchema>;
+
+export const notificationSubscriptionSchema = z.object({
+  email: z.email("Valid email is required"),
+  cities: z.array(z.string().trim().min(1)).default([]),
+  categoryIds: z.array(z.string().trim().min(1)).default([]),
+  priceMax: z
+    .union([z.coerce.number().min(0), z.nan()])
+    .optional()
+    .transform((value) => (typeof value === "number" && !Number.isNaN(value) ? value : undefined)),
+  freeOnly: z.boolean().default(false),
+  frequency: z.enum(["DAILY", "WEEKLY"]).default("WEEKLY"),
+});
+
+export type NotificationSubscriptionInput = z.infer<typeof notificationSubscriptionSchema>;
