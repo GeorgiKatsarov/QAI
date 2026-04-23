@@ -50,6 +50,23 @@ function formatEventTime(dateIso: string) {
   });
 }
 
+function getCategoryColorClasses(categorySlug: string | null) {
+  switch (categorySlug) {
+    case "music":
+      return "border-l-4 border-l-violet-500 bg-violet-50 hover:bg-violet-100";
+    case "art":
+      return "border-l-4 border-l-fuchsia-500 bg-fuchsia-50 hover:bg-fuchsia-100";
+    case "food":
+      return "border-l-4 border-l-amber-500 bg-amber-50 hover:bg-amber-100";
+    case "sports":
+      return "border-l-4 border-l-emerald-500 bg-emerald-50 hover:bg-emerald-100";
+    case "family":
+      return "border-l-4 border-l-sky-500 bg-sky-50 hover:bg-sky-100";
+    default:
+      return "border-l-4 border-l-slate-400 bg-background hover:bg-accent";
+  }
+}
+
 export function CalendarTimeline({ events }: { events: EventCardDto[] }) {
   const now = useMemo(() => new Date(), []);
   const [viewDate, setViewDate] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
@@ -137,7 +154,7 @@ export function CalendarTimeline({ events }: { events: EventCardDto[] }) {
                   <li key={event.id}>
                     <Link
                       href={`/events/${event.slug}`}
-                      className="block rounded-md bg-background px-2 py-1 text-xs hover:bg-accent"
+                      className={`block rounded-md px-2 py-1 text-xs ${getCategoryColorClasses(event.categorySlug)}`}
                       data-testid={`event-card-${event.id}`}
                     >
                       <p className="truncate font-medium">{event.title}</p>
