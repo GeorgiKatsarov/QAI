@@ -2,6 +2,7 @@ import { NotificationFrequency } from "@/generated/prisma";
 import { prisma } from "@/lib/db/client";
 import {
   notificationSubscriptionSchema,
+  subscriptionTokenSchema,
   type NotificationSubscriptionInput,
 } from "@/lib/validation/events";
 
@@ -9,7 +10,11 @@ export async function createNotificationSubscription(input: NotificationSubscrip
   const parsed = notificationSubscriptionSchema.parse(input);
 
   if (!prisma) {
-    return { id: `mock-subscription-${Date.now()}`, confirmationToken: "mock-token" };
+    return {
+      id: `mock-subscription-${Date.now()}`,
+      confirmationToken: "mock-token",
+      unsubscribeToken: "mock-unsubscribe-token",
+    };
   }
 
   return prisma.notificationSubscription.create({
@@ -28,6 +33,43 @@ export async function createNotificationSubscription(input: NotificationSubscrip
     select: {
       id: true,
       confirmationToken: true,
+      unsubscribeToken: true,
     },
   });
+}
+
+export async function confirmNotificationSubscription(token: string) {
+  const parsedToken = subscriptionTokenSchema.parse({ token });
+
+  if (!prisma) {
+    return parsedToken.token === "mock-token";
+  }
+
+  const result = await prisma.notificationSubscription.updateMany({
+    where: {
+      confirmationToken: parsedToken.token,
+      isConfirmed: false,
+    },
+    data: {
+      isConfirmed: true,
+    },
+  });
+
+  return result.count > 0;
+}
+
+export async function unsubscribeNotificationSubscription(token: string) {
+  const parsedToken = subscriptionTokenSchema.parse({ token });
+
+  if (!prisma) {
+    return parsedToken.token === "mock-unsubscribe-token";
+  }
+
+  const result = await prisma.notificationSubscription.deleteMany({
+    where: {
+      unsubscribeToken: parsedToken.token,
+    },
+  });
+
+  return result.count > 0;
 }

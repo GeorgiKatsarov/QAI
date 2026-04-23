@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,6 +12,8 @@ import {
 export function NotificationSubscriptionForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [confirmationToken, setConfirmationToken] = useState("");
+  const [unsubscribeToken, setUnsubscribeToken] = useState("");
 
   const form = useForm<NotificationSubscriptionInput>({
     resolver: zodResolver(notificationSubscriptionSchema),
@@ -26,6 +29,10 @@ export function NotificationSubscriptionForm() {
 
   async function onSubmit(values: NotificationSubscriptionInput) {
     setStatus("idle");
+    setErrorMessage("");
+    setConfirmationToken("");
+    setUnsubscribeToken("");
+
     const response = await fetch("/api/subscriptions", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -40,6 +47,8 @@ export function NotificationSubscriptionForm() {
     }
 
     setStatus("success");
+    setConfirmationToken(payload.confirmationToken ?? "");
+    setUnsubscribeToken(payload.unsubscribeToken ?? "");
   }
 
   return (
@@ -124,9 +133,33 @@ export function NotificationSubscriptionForm() {
       </button>
 
       {status === "success" ? (
-        <p data-testid="subscription-success" className="text-sm text-green-600">
-          Subscription saved. Please confirm from your email.
-        </p>
+        <div data-testid="subscription-success" className="space-y-2 text-sm text-green-700">
+          <p>Subscription saved. Please confirm from your email.</p>
+          {confirmationToken ? (
+            <p>
+              Demo confirmation link:{" "}
+              <Link
+                href={`/notifications/confirm?token=${confirmationToken}`}
+                data-testid="subscription-confirm-link"
+                className="underline"
+              >
+                Confirm subscription
+              </Link>
+            </p>
+          ) : null}
+          {unsubscribeToken ? (
+            <p>
+              Demo unsubscribe link:{" "}
+              <Link
+                href={`/notifications/unsubscribe?token=${unsubscribeToken}`}
+                data-testid="subscription-unsubscribe-link"
+                className="underline"
+              >
+                Unsubscribe
+              </Link>
+            </p>
+          ) : null}
+        </div>
       ) : null}
       {status === "error" ? (
         <p data-testid="subscription-error" className="text-sm text-destructive">
