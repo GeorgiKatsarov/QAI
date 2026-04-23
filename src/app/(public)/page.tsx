@@ -6,29 +6,33 @@ const cards = [
     href: "/map",
     testId: "home-cta-map",
     icon: Map,
-    label: "Map View",
-    sub: "Browse by location",
+    label: "Карта",
+    sub: "Разгледай по локация",
+    gradient: "from-[#4A9ADE] to-[#7BBDE8]",
   },
   {
     href: "/calendar",
     testId: "home-cta-calendar",
     icon: Calendar,
-    label: "Calendar View",
-    sub: "Browse by date",
+    label: "Календар",
+    sub: "Разгледай по дата",
+    gradient: "from-[#6BB5E8] to-[#A8D8F5]",
   },
   {
     href: "/submit",
     testId: "home-cta-submit",
     icon: Send,
-    label: "Submit an Event",
-    sub: "Add your event",
+    label: "Добави събитие",
+    sub: "Изпрати ново събитие",
+    gradient: "from-[#D778B8] to-[#F0A7D0]",
   },
   {
     href: "/notifications",
     testId: "home-cta-notifications",
     icon: Bell,
-    label: "Get Notified",
-    sub: "Event digests by email",
+    label: "Известия",
+    sub: "Имейл бюлетини за събития",
+    gradient: "from-[#B07FD8] to-[#D4A8F0]",
   },
 ];
 
@@ -99,17 +103,17 @@ export default function HomePage() {
       <div className="relative z-10 container mx-auto flex flex-col items-center px-4 py-16 text-white md:py-20">
         <div className="mb-12 max-w-2xl space-y-4 text-center">
           <div className="inline-block rounded-full bg-white/15 px-4 py-1 text-sm font-semibold text-white/90">
-            ✨ Bulgaria&apos;s event discovery platform
+            Открий най-интересните събития в България
           </div>
           <h1 className="text-4xl font-extrabold leading-tight md:text-6xl">
-            Explore a living collage
+            Разгледай жива палитра
             <span className="block bg-gradient-to-r from-[#95d7ff] to-[#f5c5ff] bg-clip-text text-transparent">
-              of events near you
+              от събития около теб
             </span>
           </h1>
           <p className="text-lg text-white/85">
-            Music, exhibitions, talks, markets, and nightlife—discover what&apos;s
-            happening across Bulgaria.
+            Музика, изложби, лекции, пазари и нощен живот — открий какво се случва
+            из цяла България.
           </p>
         </div>
 
@@ -120,29 +124,6 @@ export default function HomePage() {
               href={href}
               data-testid={testId}
               className={`bg-gradient-to-br ${gradient} flex flex-col items-center gap-3 rounded-2xl p-7 text-center text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-xl`}
-            >
-              <span className="flex size-11 items-center justify-center rounded-xl bg-white/25">
-                <Icon className="size-5" />
-              </span>
-              <div>
-                <p className="text-base font-bold">{label}</p>
-                <p className="text-sm opacity-80">{sub}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="absolute inset-0 bg-[#0f2740]/35 backdrop-blur-sm" />
-
-      <div className="relative z-10 container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-white">
-        <div className="grid w-full max-w-lg grid-cols-2 gap-5">
-          {cards.map(({ href, testId, icon: Icon, label, sub }) => (
-            <Link
-              key={href}
-              href={href}
-              data-testid={testId}
-              className="flex flex-col items-center gap-3 rounded-2xl border border-white/30 bg-[#4a8ccf]/85 p-7 text-center text-white shadow-lg shadow-[#0f2740]/40 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-[#5b9fe3]/90 hover:shadow-xl"
             >
               <span className="flex size-11 items-center justify-center rounded-xl bg-white/25">
                 <Icon className="size-5" />

@@ -20,7 +20,7 @@ export default async function CalendarPage({
           name="search"
           defaultValue={typeof params.search === "string" ? params.search : ""}
           type="text"
-          placeholder="Search events..."
+          placeholder="Търси събития..."
           className="flex-1 max-w-xs rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           data-testid="calendar-search-input"
         />
@@ -30,10 +30,10 @@ export default async function CalendarPage({
           className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           data-testid="calendar-filter-city"
         >
-          <option value="">All cities</option>
-          <option value="Sofia">Sofia</option>
-          <option value="Plovdiv">Plovdiv</option>
-          <option value="Varna">Varna</option>
+          <option value="">Всички градове</option>
+          <option value="София">София</option>
+          <option value="Пловдив">Пловдив</option>
+          <option value="Варна">Варна</option>
         </select>
         <select
           name="category"
@@ -41,14 +41,16 @@ export default async function CalendarPage({
           className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
           data-testid="calendar-filter-category"
         >
-          <option value="">All categories</option>
-          <option value="music">Music</option>
-          <option value="art">Art</option>
-          <option value="food">Food</option>
-          <option value="sports">Sports</option>
-          <option value="family">Family</option>
+          <option value="">Всички категории</option>
+          <option value="music">Музика</option>
+          <option value="art">Изкуство</option>
+          <option value="food">Храна</option>
+          <option value="sports">Спорт</option>
+          <option value="family">Семейни</option>
         </select>
-        <button className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground">Apply</button>
+        <button className="rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground">
+          Приложи
+        </button>
       </form>
 
       <div className="rounded-xl border border-border bg-card p-6 min-h-96" data-testid="calendar-container">

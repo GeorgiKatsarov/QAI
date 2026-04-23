@@ -22,7 +22,7 @@ export function AdminSubmissionActions({ id }: { id: string }) {
         disabled={loading}
         onClick={() => run("approve")}
       >
-        Approve
+        Одобри
       </button>
       <button
         className="rounded border px-2 py-1 text-xs"
@@ -30,7 +30,7 @@ export function AdminSubmissionActions({ id }: { id: string }) {
         disabled={loading}
         onClick={() => run("reject")}
       >
-        Reject
+        Отхвърли
       </button>
     </div>
   );

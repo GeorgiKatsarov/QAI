@@ -55,11 +55,11 @@ export function MapProximityView({ events }: { events: EventCardDto[] }) {
 
   function requestUserLocation() {
     if (!navigator.geolocation) {
-      setLocationStatus("Geolocation is not supported in this browser.");
+      setLocationStatus("Геолокацията не се поддържа от този браузър.");
       return;
     }
 
-    setLocationStatus("Getting your location...");
+    setLocationStatus("Опитваме се да определим местоположението ви...");
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -67,10 +67,10 @@ export function MapProximityView({ events }: { events: EventCardDto[] }) {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
-        setLocationStatus("Location enabled. Showing nearby events.");
+        setLocationStatus("Локацията е активна. Показваме близки събития.");
       },
       () => {
-        setLocationStatus("Location access denied. Please allow location to use proximity filtering.");
+        setLocationStatus("Достъпът до локацията е отказан. Разрешете го, за да използвате филтъра по близост.");
       },
     );
   }
@@ -85,11 +85,11 @@ export function MapProximityView({ events }: { events: EventCardDto[] }) {
             onClick={requestUserLocation}
             data-testid="map-location-button"
           >
-            Use my location
+            Използвай моята локация
           </button>
 
           <label htmlFor="map-radius" className="text-sm font-medium text-muted-foreground">
-            Radius
+            Радиус
           </label>
           <select
             id="map-radius"
@@ -101,7 +101,7 @@ export function MapProximityView({ events }: { events: EventCardDto[] }) {
           >
             {DISTANCE_OPTIONS_KM.map((distance) => (
               <option key={distance} value={distance}>
-                {distance} km
+                {distance} км
               </option>
             ))}
           </select>
@@ -112,16 +112,16 @@ export function MapProximityView({ events }: { events: EventCardDto[] }) {
               className="rounded-md border border-border bg-background px-3 py-1.5 text-sm"
               onClick={() => {
                 setUserLocation(null);
-                setLocationStatus("Proximity filter cleared.");
+                setLocationStatus("Филтърът по локация е изчистен.");
               }}
               data-testid="map-clear-location"
             >
-              Clear location filter
+              Изчисти филтъра по локация
             </button>
           ) : null}
         </div>
         <p className="mt-2 text-xs text-muted-foreground" data-testid="map-location-status">
-          {locationStatus || "Enable location to filter events by distance from you."}
+          {locationStatus || "Активирайте локацията, за да филтрирате събития по разстояние."}
         </p>
       </div>
 

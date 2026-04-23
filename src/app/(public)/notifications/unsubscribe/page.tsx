@@ -24,17 +24,17 @@ export default async function UnsubscribePage({
           {unsubscribed ? <BellOff className="size-7" /> : <CircleAlert className="size-7" />}
         </div>
 
-        <h1 className="mt-5 text-3xl font-extrabold tracking-tight">Manage subscription</h1>
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight">Управлявай абонамента си</h1>
 
         {unsubscribed ? (
           <div
             className="mt-4 space-y-3 text-sky-700"
             data-testid="subscription-unsubscribe-success"
           >
-            <p className="text-base font-semibold">You have been unsubscribed.</p>
+            <p className="text-base font-semibold">Абонаментът е прекратен.</p>
             <p className="leading-7 text-sky-800/85">
-              You will no longer receive event digests for this subscription. You can create a new
-              one at any time with different preferences.
+              Повече няма да получаваш бюлетини за този абонамент. Можеш да създадеш нов по всяко време
+              с различни предпочитания.
             </p>
           </div>
         ) : (
@@ -42,10 +42,9 @@ export default async function UnsubscribePage({
             className="mt-4 space-y-3 text-destructive"
             data-testid="subscription-unsubscribe-invalid"
           >
-            <p className="text-base font-semibold">This unsubscribe link is invalid or expired.</p>
+            <p className="text-base font-semibold">Този линк за отписване е невалиден или е изтекъл.</p>
             <p className="leading-7 text-destructive/85">
-              If you still want to stop these emails, create a new subscription first or use a
-              valid unsubscribe link from one of the emails.
+              Ако все още искаш да спреш тези имейли, използвай валиден линк за отписване от получен бюлетин.
             </p>
           </div>
         )}
@@ -55,7 +54,7 @@ export default async function UnsubscribePage({
           className="mt-8 inline-flex rounded-2xl border border-border bg-background px-4 py-3 text-sm font-semibold hover:bg-muted"
           data-testid="subscription-unsubscribe-back-link"
         >
-          Return to notifications
+          Назад към известията
         </Link>
       </div>
     </div>

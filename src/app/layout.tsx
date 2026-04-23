@@ -10,9 +10,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Roamer — Bulgaria Event Discovery",
-  description:
-    "Discover events across Bulgaria by map, calendar, and category.",
+  title: "Roamer — Открий събития в България",
+  description: "Откривай събития в България по карта, календар и категория.",
 };
 
 export default function RootLayout({

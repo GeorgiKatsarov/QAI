@@ -24,22 +24,21 @@ export default async function ConfirmSubscriptionPage({
           {confirmed ? <CheckCircle2 className="size-7" /> : <MailWarning className="size-7" />}
         </div>
 
-        <h1 className="mt-5 text-3xl font-extrabold tracking-tight">Confirm your subscription</h1>
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight">Потвърди абонамента си</h1>
 
         {confirmed ? (
           <div data-testid="subscription-confirm-success" className="mt-4 space-y-3 text-emerald-700">
-            <p className="text-base font-semibold">Your email is confirmed.</p>
+            <p className="text-base font-semibold">Имейлът ти е потвърден.</p>
             <p className="leading-7 text-emerald-800/85">
-              Your digest is now active and future matching events will be sent based on the
-              preferences you selected.
+              Абонаментът вече е активен и бъдещи събития, които съвпадат с предпочитанията ти,
+              ще бъдат изпращани по имейл.
             </p>
           </div>
         ) : (
           <div data-testid="subscription-confirm-invalid" className="mt-4 space-y-3 text-destructive">
-            <p className="text-base font-semibold">This confirmation link is invalid or expired.</p>
+            <p className="text-base font-semibold">Този линк за потвърждение е невалиден или е изтекъл.</p>
             <p className="leading-7 text-destructive/85">
-              If needed, go back and create a new subscription so a fresh confirmation link can be
-              generated.
+              Ако е нужно, върни се и създай нов абонамент, за да получиш нов линк за потвърждение.
             </p>
           </div>
         )}
@@ -49,7 +48,7 @@ export default async function ConfirmSubscriptionPage({
           className="mt-8 inline-flex rounded-2xl border border-border bg-background px-4 py-3 text-sm font-semibold hover:bg-muted"
           data-testid="subscription-confirm-back-link"
         >
-          Return to notifications
+          Назад към известията
         </Link>
       </div>
     </div>

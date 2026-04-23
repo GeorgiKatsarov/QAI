@@ -4,18 +4,18 @@ import { SubmitEventForm } from "@/components/submit/SubmitEventForm";
 const benefits = [
   {
     icon: CalendarClock,
-    title: "Share the essentials",
-    body: "Title, timing, city, and category are enough to get a strong submission started.",
+    title: "Сподели най-важното",
+    body: "Заглавие, дата, град и категория са достатъчни, за да започне добро предложение.",
   },
   {
     icon: ShieldCheck,
-    title: "Reviewed before publishing",
-    body: "Every event is checked before it goes live, so the public feed stays cleaner and more reliable.",
+    title: "Преглед преди публикуване",
+    body: "Всяко събитие се проверява преди да стане видимо, за да остане публичният поток по-чист и надежден.",
   },
   {
     icon: Mail,
-    title: "Easy follow-up if needed",
-    body: "If something is missing, the review team can reach out to the contact email you provide.",
+    title: "Лесна връзка при нужда",
+    body: "Ако липсва нещо, екипът може да се свърже с теб на посочения имейл.",
   },
 ];
 
@@ -27,14 +27,14 @@ export default function SubmitPage() {
           <div className="rounded-[2rem] border border-border/70 bg-gradient-to-br from-[#F6FBFF] via-white to-[#FFF3F9] p-7 shadow-[0_20px_70px_rgba(74,154,222,0.12)]">
             <div className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               <Sparkles className="size-3.5" />
-              Create an event listing
+              Създай обява за събитие
             </div>
             <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-foreground">
-              Submit a new event in a format that is easy to review
+              Изпрати ново събитие в удобен за преглед формат
             </h1>
             <p className="mt-4 max-w-xl text-base leading-8 text-muted-foreground">
-              If you are organizing, promoting, or helping with an event, send it here. The team
-              will review the submission before publishing it to the public event feed.
+              Ако организираш, промотираш или помагаш за събитие, изпрати го тук. Екипът ще
+              прегледа предложението преди то да бъде публикувано в публичния поток.
             </p>
           </div>
 
@@ -61,10 +61,10 @@ export default function SubmitPage() {
             <div className="flex items-start gap-3">
               <MapPinned className="mt-1 size-5 text-primary" />
               <div>
-                <h2 className="text-base font-bold text-foreground">Before you submit</h2>
+                <h2 className="text-base font-bold text-foreground">Преди да изпратиш</h2>
                 <p className="mt-1 text-sm leading-7 text-muted-foreground">
-                  If the event has a strong description, exact timing, and a clear city, it is much
-                  more likely to be approved quickly without follow-up questions.
+                  Ако събитието има ясно описание, точен час и град, шансът да бъде одобрено
+                  бързо без допълнителни въпроси е много по-голям.
                 </p>
               </div>
             </div>

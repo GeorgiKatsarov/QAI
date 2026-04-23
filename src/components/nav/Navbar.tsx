@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 import { Map, Calendar, Send, Bell, Sparkles } from "lucide-react";
 
 const links = [
-  { href: "/map",           label: "Map",           icon: Map },
-  { href: "/calendar",      label: "Calendar",      icon: Calendar },
-  { href: "/submit",        label: "Submit Event",  icon: Send },
-  { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/map", label: "Карта", icon: Map, testId: "nav-link-map" },
+  { href: "/calendar", label: "Календар", icon: Calendar, testId: "nav-link-calendar" },
+  { href: "/submit", label: "Добави събитие", icon: Send, testId: "nav-link-submit-event" },
+  { href: "/notifications", label: "Известия", icon: Bell, testId: "nav-link-notifications" },
 ];
 
 export function Navbar() {
@@ -26,8 +26,6 @@ export function Navbar() {
       data-testid="navbar"
     >
       <div className="container mx-auto px-5 flex items-center gap-6 h-[3.75rem]">
-
-        {/* Logo */}
         <Link
           href="/"
           className="flex items-center gap-1.5 shrink-0 group"
@@ -47,15 +45,14 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Nav links */}
         <nav className="flex items-center gap-0.5 overflow-x-auto" data-testid="nav-links">
-          {links.map(({ href, label, icon: Icon }) => {
+          {links.map(({ href, label, icon: Icon, testId }) => {
             const active = pathname === href || pathname.startsWith(href + "/");
             return (
               <Link
                 key={href}
                 href={href}
-                data-testid={`nav-link-${label.toLowerCase().replace(/\s+/g, "-")}`}
+                data-testid={testId}
                 className={cn(
                   "flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap",
                   active

@@ -21,11 +21,11 @@ export type EventQueryInput = z.input<typeof eventQuerySchema>;
 export type EventQuery = z.output<typeof eventQuerySchema>;
 
 export const submitEventSchema = z.object({
-  title: z.string().trim().min(3, "Title is required"),
-  date: z.string().min(1, "Valid date is required").refine((value) => !Number.isNaN(Date.parse(value)), "Valid date is required"),
-  city: z.string().trim().min(2, "City is required"),
-  categorySlug: z.string().trim().min(1, "Category is required"),
-  email: z.email("Valid email is required"),
+  title: z.string().trim().min(3, "Заглавието е задължително"),
+  date: z.string().min(1, "Въведете валидна дата").refine((value) => !Number.isNaN(Date.parse(value)), "Въведете валидна дата"),
+  city: z.string().trim().min(2, "Градът е задължителен"),
+  categorySlug: z.string().trim().min(1, "Категорията е задължителна"),
+  email: z.email("Въведете валиден имейл"),
   description: z.string().trim().max(5000).optional().or(z.literal("")),
   honeypot: z.string().max(0).optional(),
 });
@@ -33,7 +33,7 @@ export const submitEventSchema = z.object({
 export type SubmitEventInput = z.infer<typeof submitEventSchema>;
 
 export const notificationSubscriptionSchema = z.object({
-  email: z.email("Valid email is required"),
+  email: z.email("Въведете валиден имейл"),
   cities: z.array(z.string().trim().min(1)).default([]),
   categoryIds: z.array(z.string().trim().min(1)).default([]),
   priceMax: z
@@ -46,9 +46,8 @@ export const notificationSubscriptionSchema = z.object({
 
 export type NotificationSubscriptionInput = z.infer<typeof notificationSubscriptionSchema>;
 
-
 export const subscriptionTokenSchema = z.object({
-  token: z.string().trim().min(1, "Token is required"),
+  token: z.string().trim().min(1, "Токенът е задължителен"),
 });
 
 export type SubscriptionTokenInput = z.infer<typeof subscriptionTokenSchema>;
