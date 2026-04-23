@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEventBySlug } from "@/lib/services/events";
@@ -17,18 +18,30 @@ export default async function EventDetailsPage({
   return (
     <div className="container mx-auto max-w-3xl px-4 py-10" data-testid="event-details-page">
       <Link href="/map" className="text-sm text-muted-foreground hover:underline">
-        ← Back to events
+        Back to events
       </Link>
-      <h1 className="text-3xl font-semibold mt-3" data-testid="event-title">
+      <h1 className="mt-3 text-3xl font-semibold" data-testid="event-title">
         {event.title}
       </h1>
-      <p className="text-muted-foreground mt-2" data-testid="event-date">
+      <p className="mt-2 text-muted-foreground" data-testid="event-date">
         {new Date(event.startDateTime).toLocaleString()}
       </p>
       <p className="text-muted-foreground" data-testid="event-venue">
         {event.venueName ?? "Venue TBD"} · {event.city}
       </p>
-      <p className="mt-6">{event.summary ?? "No additional event description is available yet."}</p>
+      {event.imageUrl ? (
+        <Image
+          src={event.imageUrl}
+          alt={event.title}
+          width={1200}
+          height={675}
+          className="mt-6 aspect-[16/9] w-full rounded-2xl border border-border object-cover"
+          priority
+        />
+      ) : null}
+      <p className="mt-6 text-lg leading-8">
+        {event.description ?? event.summary ?? "No additional event description is available yet."}
+      </p>
       {event.sourceUrl ? (
         <a
           href={event.sourceUrl}

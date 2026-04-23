@@ -11,7 +11,13 @@ type CalendarDayCell = {
   events: EventCardDto[];
 };
 
+type UserLocation = {
+  latitude: number;
+  longitude: number;
+};
+
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DISTANCE_OPTIONS_KM = [5, 10, 25, 50, 100];
 
 function getDayKey(date: Date) {
   const year = date.getFullYear();
@@ -67,14 +73,54 @@ function getCategoryColorClasses(categorySlug: string | null) {
   }
 }
 
+function getDistanceInKm(from: UserLocation, to: UserLocation) {
+  const earthRadiusKm = 6371;
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+
+  const deltaLat = toRadians(to.latitude - from.latitude);
+  const deltaLon = toRadians(to.longitude - from.longitude);
+  const fromLat = toRadians(from.latitude);
+  const toLat = toRadians(to.latitude);
+
+  const a =
+    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.cos(fromLat) * Math.cos(toLat) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return earthRadiusKm * c;
+}
+
 export function CalendarTimeline({ events }: { events: EventCardDto[] }) {
   const now = useMemo(() => new Date(), []);
   const [viewDate, setViewDate] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [radiusKm, setRadiusKm] = useState(25);
+  const [locationStatus, setLocationStatus] = useState<string>("");
 
   const todayKey = getDayKey(now);
 
+  const visibleEvents = useMemo(() => {
+    if (!userLocation) {
+      return events;
+    }
+
+    return events.filter((event) => {
+      if (event.latitude == null || event.longitude == null) {
+        return false;
+      }
+
+      return (
+        getDistanceInKm(userLocation, {
+          latitude: event.latitude,
+          longitude: event.longitude,
+        }) <= radiusKm
+      );
+    });
+  }, [events, userLocation, radiusKm]);
+
   const eventsByDay = useMemo(() => {
-    const grouped = events.reduce<Record<string, EventCardDto[]>>((acc, event) => {
+    const grouped = visibleEvents.reduce<Record<string, EventCardDto[]>>((acc, event) => {
       const dayKey = getDayKey(new Date(event.startDateTime));
       acc[dayKey] = acc[dayKey] ?? [];
       acc[dayKey].push(event);
@@ -86,7 +132,7 @@ export function CalendarTimeline({ events }: { events: EventCardDto[] }) {
     });
 
     return grouped;
-  }, [events]);
+  }, [visibleEvents]);
 
   const calendarDays = useMemo(() => getMonthGrid(viewDate, eventsByDay), [viewDate, eventsByDay]);
 
@@ -95,9 +141,31 @@ export function CalendarTimeline({ events }: { events: EventCardDto[] }) {
     year: "numeric",
   });
 
+  function requestUserLocation() {
+    if (!navigator.geolocation) {
+      setLocationStatus("Geolocation is not supported in this browser.");
+      return;
+    }
+
+    setLocationStatus("Getting your location...");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        setLocationStatus("Location enabled. Showing nearby events.");
+      },
+      () => {
+        setLocationStatus("Location access denied. Please allow location to use proximity filtering.");
+      },
+    );
+  }
+
   return (
     <div className="space-y-4" data-testid="calendar-month-view">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
@@ -117,6 +185,55 @@ export function CalendarTimeline({ events }: { events: EventCardDto[] }) {
         >
           Next
         </button>
+      </div>
+
+      <div className="rounded-lg border border-border bg-muted/20 p-3" data-testid="calendar-proximity-controls">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className="rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium"
+            onClick={requestUserLocation}
+            data-testid="calendar-location-button"
+          >
+            Use my location
+          </button>
+
+          <label htmlFor="calendar-radius" className="text-sm font-medium text-muted-foreground">
+            Radius
+          </label>
+          <select
+            id="calendar-radius"
+            value={radiusKm}
+            onChange={(event) => setRadiusKm(Number(event.target.value))}
+            disabled={!userLocation}
+            className="rounded-md border border-input bg-background px-3 py-1.5 text-sm disabled:opacity-60"
+            data-testid="calendar-radius-filter"
+          >
+            {DISTANCE_OPTIONS_KM.map((distance) => (
+              <option key={distance} value={distance}>
+                {distance} km
+              </option>
+            ))}
+          </select>
+
+          {userLocation ? (
+            <button
+              type="button"
+              className="rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              onClick={() => {
+                setUserLocation(null);
+                setLocationStatus("Proximity filter cleared.");
+              }}
+              data-testid="calendar-clear-location"
+            >
+              Clear location filter
+            </button>
+          ) : null}
+        </div>
+
+        <p className="mt-2 text-xs text-muted-foreground" data-testid="calendar-location-status">
+          {locationStatus || "Enable location to filter events by distance from you."}
+        </p>
       </div>
 
       <div className="grid grid-cols-7 gap-2">
