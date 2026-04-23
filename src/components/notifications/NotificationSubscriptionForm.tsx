@@ -11,26 +11,26 @@ import {
   type NotificationSubscriptionInput,
 } from "@/lib/validation/events";
 
-const CITY_OPTIONS = ["Sofia", "Plovdiv", "Varna", "Burgas"] as const;
+const CITY_OPTIONS = ["София", "Пловдив", "Варна", "Бургас"] as const;
 
 const CATEGORY_OPTIONS = [
-  { value: "music", label: "Music" },
-  { value: "art", label: "Art & Exhibitions" },
-  { value: "food", label: "Food & Drink" },
-  { value: "sports", label: "Sports" },
-  { value: "family", label: "Family" },
+  { value: "music", label: "Музика" },
+  { value: "art", label: "Изкуство и изложби" },
+  { value: "food", label: "Храна и напитки" },
+  { value: "sports", label: "Спорт" },
+  { value: "family", label: "Семейни" },
 ] as const;
 
 const FREQUENCY_OPTIONS = [
   {
     value: "DAILY" as const,
-    label: "Daily",
-    description: "Best if you want fresh event picks every day.",
+    label: "Всеки ден",
+    description: "Подходящо, ако искаш свежи предложения за събития всеки ден.",
   },
   {
     value: "WEEKLY" as const,
-    label: "Weekly",
-    description: "A lower-noise roundup of the most relevant events.",
+    label: "Веднъж седмично",
+    description: "По-спокойно обобщение с най-подходящите събития.",
   },
 ] as const;
 
@@ -118,7 +118,7 @@ export function NotificationSubscriptionForm() {
     const payload = await response.json();
     if (!response.ok || !payload.ok) {
       setStatus("error");
-      setErrorMessage(payload.error ?? "Failed to create subscription");
+      setErrorMessage(payload.error ?? "Не успяхме да запазим абонамента");
       return;
     }
 
@@ -132,40 +132,40 @@ export function NotificationSubscriptionForm() {
       <form
         className="space-y-8"
         data-testid="subscription-form"
-        aria-label="Notification subscription form"
+        aria-label="Форма за абонамент за известия"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="grid gap-4 rounded-[1.5rem] border border-primary/15 bg-gradient-to-br from-white via-[#F8FCFF] to-[#EAF5FF] p-5 sm:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               <BellRing className="size-3.5" />
-              Personalized event digests
+              Персонализирани бюлетини за събития
             </div>
             <h2 className="text-xl font-extrabold tracking-tight text-foreground sm:text-2xl">
-              Set up the events you actually want to hear about
+              Настрой събитията, за които реално искаш да чуваш
             </h2>
             <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-              Pick cities, categories, cadence, and budget once. We will filter the noise and send
-              a tighter shortlist that matches your preferences.
+              Избери градове, категории, честота и бюджет веднъж. Ние ще филтрираме шума и ще
+              изпращаме по-точен списък със събития според предпочитанията ти.
             </p>
           </div>
 
           <div className="rounded-[1.25rem] border border-border/70 bg-white/80 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              At a glance
+              Накратко
             </p>
             <div className="mt-3 space-y-3 text-sm text-muted-foreground">
               <div className="flex items-start gap-3">
                 <Mail className="mt-0.5 size-4 text-primary" />
-                <p>Confirmation stays double opt-in so subscriptions are explicit.</p>
+                <p>Потвърждението остава двойно, за да са абонаментите изрични и ясни.</p>
               </div>
               <div className="flex items-start gap-3">
                 <MapPinned className="mt-0.5 size-4 text-primary" />
-                <p>City picks are optional. Leave them empty to get a broader digest.</p>
+                <p>Изборът на град е по желание. Остави го празен за по-широк бюлетин.</p>
               </div>
               <div className="flex items-start gap-3">
                 <Sparkles className="mt-0.5 size-4 text-primary" />
-                <p>You can unsubscribe at any time from every email you receive.</p>
+                <p>Можеш да се отпишеш по всяко време от всеки получен имейл.</p>
               </div>
             </div>
           </div>
@@ -174,18 +174,18 @@ export function NotificationSubscriptionForm() {
         <section className="space-y-3">
           <div className="space-y-1.5">
             <label htmlFor="sub-email" className="text-sm font-semibold">
-              Email address <span className="text-destructive">*</span>
+              Имейл адрес <span className="text-destructive">*</span>
             </label>
             <input
               id="sub-email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="ти@example.com"
               className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm shadow-sm placeholder:text-muted-foreground"
               data-testid="subscription-email-input"
               {...form.register("email")}
             />
             <p className="text-xs text-muted-foreground">
-              We only use this to send the digest and confirmation links.
+              Ще го използваме само за бюлетина и линковете за потвърждение.
             </p>
             {form.formState.errors.email ? (
               <p className="text-sm text-destructive" data-testid="subscription-error">
@@ -198,9 +198,9 @@ export function NotificationSubscriptionForm() {
         <section className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-3">
             <div>
-              <p className="text-sm font-semibold">Cities</p>
+              <p className="text-sm font-semibold">Градове</p>
               <p className="text-xs text-muted-foreground">
-                Choose one or more cities, or leave this blank for all locations.
+                Избери един или повече градове, или остави празно за всички локации.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -247,9 +247,9 @@ export function NotificationSubscriptionForm() {
 
           <div className="space-y-3">
             <div>
-              <p className="text-sm font-semibold">Categories</p>
+              <p className="text-sm font-semibold">Категории</p>
               <p className="text-xs text-muted-foreground">
-                Select the kinds of events that should make it into your digest.
+                Избери какви събития да попадат в бюлетина ти.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -298,9 +298,9 @@ export function NotificationSubscriptionForm() {
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="space-y-3">
             <div>
-              <p className="text-sm font-semibold">Delivery frequency</p>
+              <p className="text-sm font-semibold">Честота на получаване</p>
               <p className="text-xs text-muted-foreground">
-                Pick how often you want us to bundle matching events.
+                Избери колко често да обобщаваме подходящите събития.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -361,16 +361,16 @@ export function NotificationSubscriptionForm() {
               aria-hidden="true"
               tabIndex={-1}
             >
-              <option value="DAILY">Daily digest</option>
-              <option value="WEEKLY">Weekly digest</option>
+              <option value="DAILY">Ежедневен бюлетин</option>
+              <option value="WEEKLY">Седмичен бюлетин</option>
             </select>
           </div>
 
           <div className="rounded-[1.5rem] border border-border/70 bg-[#F8FCFF] p-5">
             <div>
-              <p className="text-sm font-semibold">Extra filters</p>
+              <p className="text-sm font-semibold">Допълнителни филтри</p>
               <p className="text-xs text-muted-foreground">
-                These help trim the digest down further.
+                Те помагат да стесним бюлетина още повече.
               </p>
             </div>
 
@@ -383,17 +383,17 @@ export function NotificationSubscriptionForm() {
                 />
                 <span>
                   <span className="block text-sm font-semibold text-foreground">
-                    Show only free events
+                    Показвай само безплатни събития
                   </span>
                   <span className="block text-xs text-muted-foreground">
-                    Useful for low-friction weekend ideas and public festivals.
+                    Полезно за лесни идеи за уикенда и публични фестивали.
                   </span>
                 </span>
               </label>
 
               <div className="space-y-1.5">
                 <label htmlFor="sub-price-max" className="text-sm font-semibold">
-                  Maximum ticket price
+                  Максимална цена на билет
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -401,14 +401,14 @@ export function NotificationSubscriptionForm() {
                     type="number"
                     min="0"
                     step="1"
-                    placeholder="Any budget"
+                    placeholder="Без ограничение"
                     className="w-full rounded-2xl border border-input bg-white px-4 py-3 text-sm"
                     {...form.register("priceMax", { valueAsNumber: true })}
                   />
-                  <span className="text-sm font-semibold text-muted-foreground">BGN</span>
+                  <span className="text-sm font-semibold text-muted-foreground">лв.</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Leave blank if price should not affect the digest.
+                  Остави празно, ако цената не трябва да влияе на бюлетина.
                 </p>
               </div>
             </div>
@@ -417,39 +417,39 @@ export function NotificationSubscriptionForm() {
 
         <section className="rounded-[1.5rem] border border-border/70 bg-gradient-to-r from-[#F9FCFF] to-[#FFF8FC] p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-            Current summary
+            Текущо обобщение
           </p>
           <div className="mt-3 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Cities</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Градове</p>
               <p className="mt-1 font-semibold text-foreground">
-                {selectedCities.length ? selectedCities.join(", ") : "All cities"}
+                {selectedCities.length ? selectedCities.join(", ") : "Всички градове"}
               </p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Categories</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Категории</p>
               <p className="mt-1 font-semibold text-foreground">
                 {selectedCategories.length
                   ? CATEGORY_OPTIONS.filter((option) => selectedCategories.includes(option.value))
                       .map((option) => option.label)
                       .join(", ")
-                  : "All categories"}
+                  : "Всички категории"}
               </p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Cadence</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Честота</p>
               <p className="mt-1 font-semibold text-foreground">
-                {frequency === "DAILY" ? "Daily digest" : "Weekly digest"}
+                {frequency === "DAILY" ? "Всеки ден" : "Веднъж седмично"}
               </p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Budget</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Бюджет</p>
               <p className="mt-1 font-semibold text-foreground">
                 {freeOnly
-                  ? "Free only"
+                  ? "Само безплатни"
                   : typeof priceMax === "number" && !Number.isNaN(priceMax)
-                    ? `Up to ${priceMax} BGN`
-                    : "Any budget"}
+                    ? `До ${priceMax} лв.`
+                    : "Без ограничение"}
               </p>
             </div>
           </div>
@@ -457,7 +457,7 @@ export function NotificationSubscriptionForm() {
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-6 text-muted-foreground">
-            By subscribing, you are asking for curated event emails for the filters above.
+            С абонамента заявяваш, че искаш подбрани имейли за събития според избраните филтри.
           </p>
           <button
             type="submit"
@@ -466,7 +466,7 @@ export function NotificationSubscriptionForm() {
             data-testid="subscription-submit-button"
           >
             <BellRing className="size-4" />
-            {form.formState.isSubmitting ? "Saving preferences..." : "Start my digest"}
+            {form.formState.isSubmitting ? "Запазваме предпочитанията..." : "Започни моя бюлетин"}
           </button>
         </div>
 
@@ -475,9 +475,9 @@ export function NotificationSubscriptionForm() {
             data-testid="subscription-success"
             className="rounded-[1.5rem] border border-emerald-200 bg-emerald-50 p-5 text-sm text-emerald-800"
           >
-            <p className="font-semibold">Subscription saved. Confirm it from your inbox to activate delivery.</p>
+            <p className="font-semibold">Абонаментът е запазен. Потвърди го от входящата си поща, за да го активираш.</p>
             <p className="mt-1 text-emerald-700/90">
-              For this demo, the confirmation and unsubscribe links are exposed below.
+              За тази демо версия линковете за потвърждение и отписване са показани по-долу.
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {confirmationToken ? (
@@ -486,7 +486,7 @@ export function NotificationSubscriptionForm() {
                   data-testid="subscription-confirm-link"
                   className="rounded-2xl border border-emerald-300 bg-white px-4 py-3 font-semibold text-emerald-800 transition-colors hover:bg-emerald-100"
                 >
-                  Confirm subscription
+                  Потвърди абонамента
                 </Link>
               ) : null}
               {unsubscribeToken ? (
@@ -495,7 +495,7 @@ export function NotificationSubscriptionForm() {
                   data-testid="subscription-unsubscribe-link"
                   className="rounded-2xl border border-emerald-300 bg-white px-4 py-3 font-semibold text-emerald-800 transition-colors hover:bg-emerald-100"
                 >
-                  Manage or unsubscribe
+                  Управлявай или се отпиши
                 </Link>
               ) : null}
             </div>
@@ -507,7 +507,7 @@ export function NotificationSubscriptionForm() {
             className="rounded-[1.5rem] border border-destructive/20 bg-destructive/5 p-4"
             data-testid="subscription-error"
           >
-            <p className="text-sm font-semibold text-destructive">We could not save your subscription.</p>
+            <p className="text-sm font-semibold text-destructive">Не успяхме да запазим абонамента.</p>
             <p className="mt-1 text-sm text-destructive">{errorMessage}</p>
           </div>
         ) : null}

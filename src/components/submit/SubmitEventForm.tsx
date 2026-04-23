@@ -7,15 +7,15 @@ import { useForm, useWatch } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { submitEventSchema, type SubmitEventInput } from "@/lib/validation/events";
 
-const CITY_SUGGESTIONS = ["Sofia", "Plovdiv", "Varna", "Burgas", "Ruse", "Stara Zagora"] as const;
+const CITY_SUGGESTIONS = ["София", "Пловдив", "Варна", "Бургас", "Русе", "Стара Загора"] as const;
 
 const CATEGORY_OPTIONS = [
-  { value: "music", label: "Music" },
-  { value: "art", label: "Art & Exhibitions" },
-  { value: "food", label: "Food & Drink" },
-  { value: "sports", label: "Sports" },
-  { value: "family", label: "Family" },
-  { value: "other", label: "Other" },
+  { value: "music", label: "Музика" },
+  { value: "art", label: "Изкуство и изложби" },
+  { value: "food", label: "Храна и напитки" },
+  { value: "sports", label: "Спорт" },
+  { value: "family", label: "Семейни" },
+  { value: "other", label: "Друго" },
 ] as const;
 
 export function SubmitEventForm() {
@@ -52,7 +52,7 @@ export function SubmitEventForm() {
     const payload = await response.json();
     if (!response.ok || !payload.ok) {
       setStatus("error");
-      setErrorMessage(payload.error ?? "Failed to submit event");
+      setErrorMessage(payload.error ?? "Не успяхме да изпратим събитието");
       return;
     }
 
@@ -73,33 +73,33 @@ export function SubmitEventForm() {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
               <Sparkles className="size-3.5" />
-              Community submissions
+              Предложения от общността
             </div>
             <h2 className="text-xl font-extrabold tracking-tight text-foreground sm:text-2xl">
-              Share an event with enough detail for a fast review
+              Сподели събитие с достатъчно детайли за бърз преглед
             </h2>
             <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-              Send the core information once and the team can turn it into a publishable listing.
-              The clearer the submission, the faster it can be reviewed and approved.
+              Изпрати основната информация веднъж и екипът ще може да я превърне в готова за
+              публикуване обява. Колкото по-ясно е предложението, толкова по-бързо може да бъде одобрено.
             </p>
           </div>
 
           <div className="rounded-[1.25rem] border border-border/70 bg-white/80 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              What helps most
+              Какво помага най-много
             </p>
             <div className="mt-3 space-y-3 text-sm text-muted-foreground">
               <div className="flex items-start gap-3">
                 <CalendarClock className="mt-0.5 size-4 text-primary" />
-                <p>Use the real start date and time whenever you have it.</p>
+                <p>Посочи реалната начална дата и час, когато ги имаш.</p>
               </div>
               <div className="flex items-start gap-3">
                 <MapPinned className="mt-0.5 size-4 text-primary" />
-                <p>Add the city clearly so the event lands in the right local feed.</p>
+                <p>Добави ясно града, за да попадне събитието в правилния локален поток.</p>
               </div>
               <div className="flex items-start gap-3">
                 <Mail className="mt-0.5 size-4 text-primary" />
-                <p>Use an email you can access in case the team needs clarification.</p>
+                <p>Използвай имейл, до който имаш достъп, в случай че екипът поиска уточнение.</p>
               </div>
             </div>
           </div>
@@ -109,12 +109,12 @@ export function SubmitEventForm() {
           <div className="space-y-5">
             <div className="space-y-1.5">
               <label htmlFor="title" className="text-sm font-semibold">
-                Event title <span className="text-destructive">*</span>
+                Заглавие на събитието <span className="text-destructive">*</span>
               </label>
               <input
                 id="title"
                 type="text"
-                placeholder="Example: Sofia Rooftop Jazz Night"
+                placeholder="Пример: Джаз вечер на покрива в София"
                 className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm"
                 data-testid="submit-title-input"
                 {...form.register("title")}
@@ -123,14 +123,14 @@ export function SubmitEventForm() {
                 <p className="text-sm text-destructive">{form.formState.errors.title.message}</p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  Keep it specific enough to identify the event quickly.
+                  Напиши го достатъчно конкретно, за да може събитието да бъде разпознато веднага.
                 </p>
               )}
             </div>
 
             <div className="space-y-1.5">
               <label htmlFor="date" className="text-sm font-semibold">
-                Date and time <span className="text-destructive">*</span>
+                Дата и час <span className="text-destructive">*</span>
               </label>
               <input
                 id="date"
@@ -143,20 +143,20 @@ export function SubmitEventForm() {
                 <p className="text-sm text-destructive">{form.formState.errors.date.message}</p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  Use local event time, not when you plan to announce it.
+                  Използвай локалния час на събитието, а не момента, в който смяташ да го обявиш.
                 </p>
               )}
             </div>
 
             <div className="space-y-1.5">
               <label htmlFor="city" className="text-sm font-semibold">
-                City <span className="text-destructive">*</span>
+                Град <span className="text-destructive">*</span>
               </label>
               <input
                 id="city"
                 type="text"
                 list="submit-city-suggestions"
-                placeholder="Start typing a city"
+                placeholder="Започни да пишеш град"
                 className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm"
                 data-testid="submit-city-input"
                 {...form.register("city")}
@@ -197,7 +197,7 @@ export function SubmitEventForm() {
           <div className="space-y-5">
             <div className="space-y-1.5">
               <label htmlFor="categorySlug" className="text-sm font-semibold">
-                Category <span className="text-destructive">*</span>
+                Категория <span className="text-destructive">*</span>
               </label>
               <div className="rounded-[1.5rem] border border-border/70 bg-[#F8FCFF] p-4">
                 <select
@@ -206,7 +206,7 @@ export function SubmitEventForm() {
                   data-testid="submit-category-input"
                   {...form.register("categorySlug")}
                 >
-                  <option value="">Select a category</option>
+                  <option value="">Избери категория</option>
                   {CATEGORY_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
@@ -244,12 +244,12 @@ export function SubmitEventForm() {
 
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-sm font-semibold">
-                Contact email <span className="text-destructive">*</span>
+                Имейл за контакт <span className="text-destructive">*</span>
               </label>
               <input
                 id="email"
                 type="email"
-                placeholder="organizer@example.com"
+                placeholder="organizator@example.com"
                 className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm"
                 data-testid="submit-email-input"
                 {...form.register("email")}
@@ -258,7 +258,7 @@ export function SubmitEventForm() {
                 <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  We may use this if something about the event needs clarification.
+                  Може да бъде използван, ако има нужда от уточнение за събитието.
                 </p>
               )}
             </div>
@@ -267,12 +267,12 @@ export function SubmitEventForm() {
 
         <section className="space-y-1.5">
           <label htmlFor="description" className="text-sm font-semibold">
-            Description
+            Описание
           </label>
           <textarea
             id="description"
             rows={6}
-            placeholder="Add the essentials: venue details, lineup, audience, highlights, or anything else that helps the review team understand the event."
+            placeholder="Добави най-важното: място, участници, публика, акценти или всичко друго, което ще помогне на екипа да разбере събитието."
             className="w-full rounded-[1.5rem] border border-input bg-background px-4 py-3 text-sm leading-7"
             {...form.register("description")}
           />
@@ -280,30 +280,30 @@ export function SubmitEventForm() {
             <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>
           ) : (
             <p className="text-xs text-muted-foreground">
-              Optional, but useful. A few good sentences are better than leaving reviewers to guess.
+              По желание, но е полезно. Няколко добри изречения са по-добри от липса на контекст.
             </p>
           )}
         </section>
 
         <section className="rounded-[1.5rem] border border-border/70 bg-gradient-to-r from-[#F9FCFF] to-[#FFF8FC] p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-            Submission preview
+            Преглед на предложението
           </p>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Category</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Категория</p>
               <p className="mt-1 font-semibold text-foreground">
-                {CATEGORY_OPTIONS.find((option) => option.value === categorySlug)?.label ?? "Not selected"}
+                {CATEGORY_OPTIONS.find((option) => option.value === categorySlug)?.label ?? "Не е избрана"}
               </p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">City</p>
-              <p className="mt-1 font-semibold text-foreground">{city || "Not added yet"}</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Град</p>
+              <p className="mt-1 font-semibold text-foreground">{city || "Все още не е добавен"}</p>
             </div>
             <div className="rounded-2xl border border-border/70 bg-white/80 p-3">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Date</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">Дата</p>
               <p className="mt-1 font-semibold text-foreground">
-                {date ? new Date(date).toLocaleString() : "Not scheduled yet"}
+                {date ? new Date(date).toLocaleString("bg-BG") : "Все още не е посочена"}
               </p>
             </div>
           </div>
@@ -311,7 +311,7 @@ export function SubmitEventForm() {
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs leading-6 text-muted-foreground">
-            Every event is reviewed before publication, so the clearer the submission, the easier the approval.
+            Всяко събитие се преглежда преди публикуване, затова колкото по-ясно е предложението, толкова по-лесно е одобрението.
           </p>
           <button
             type="submit"
@@ -319,7 +319,7 @@ export function SubmitEventForm() {
             data-testid="submit-button"
           >
             <Sparkles className="size-4" />
-            {form.formState.isSubmitting ? "Submitting..." : "Submit for review"}
+            {form.formState.isSubmitting ? "Изпращане..." : "Изпрати за преглед"}
           </button>
         </div>
 
@@ -332,10 +332,10 @@ export function SubmitEventForm() {
               <CheckCircle2 className="mt-0.5 size-5 text-emerald-700" />
               <div>
                 <p className="text-sm font-semibold text-emerald-800">
-                  Thanks. Your event submission is now pending review.
+                  Благодарим. Предложението ти вече чака преглед.
                 </p>
                 <p className="mt-1 text-sm leading-6 text-emerald-700/90">
-                  The team will review the details and publish it once everything looks good.
+                  Екипът ще провери детайлите и ще го публикува, ако всичко е наред.
                 </p>
               </div>
             </div>
@@ -347,7 +347,7 @@ export function SubmitEventForm() {
             <div className="flex items-start gap-3">
               <CircleAlert className="mt-0.5 size-5 text-destructive" />
               <div>
-                <p className="text-sm font-semibold text-destructive">We could not submit the event.</p>
+                <p className="text-sm font-semibold text-destructive">Не успяхме да изпратим събитието.</p>
                 <p className="mt-1 text-sm text-destructive">{errorMessage}</p>
               </div>
             </div>
