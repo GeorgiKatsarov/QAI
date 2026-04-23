@@ -1,5 +1,6 @@
 import { listPublicEvents } from "@/lib/services/events";
 import { EventList } from "@/components/events/EventList";
+import { CityMapView } from "@/components/map/CityMapView";
 
 export default async function MapPage({
   searchParams,
@@ -53,8 +54,8 @@ export default async function MapPage({
       </form>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 bg-muted flex items-center justify-center text-muted-foreground" data-testid="map-container">
-          <p className="text-sm">Interactive map placeholder (markers coming in next chunk).</p>
+        <div className="flex-1 p-4" data-testid="map-container">
+          <CityMapView events={result.items} />
         </div>
 
         <aside className="w-96 border-l border-border overflow-y-auto">
