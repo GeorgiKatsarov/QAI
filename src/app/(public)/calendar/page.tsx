@@ -1,5 +1,5 @@
-import { EventList } from "@/components/events/EventList";
 import { listPublicEvents } from "@/lib/services/events";
+import { CalendarTimeline } from "@/components/calendar/CalendarTimeline";
 
 export default async function CalendarPage({
   searchParams,
@@ -52,7 +52,7 @@ export default async function CalendarPage({
       </form>
 
       <div className="rounded-xl border border-border bg-card p-6 min-h-96" data-testid="calendar-container">
-        <EventList events={result.items} testIdPrefix="calendar" />
+        <CalendarTimeline events={result.items} />
       </div>
     </div>
   );
