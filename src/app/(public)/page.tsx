@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Map, Calendar, Send, Bell } from "lucide-react";
+import { listPublicEvents } from "@/lib/services/events";
 
 const cards = [
   {
@@ -32,65 +33,34 @@ const cards = [
   },
 ];
 
-const collageSlides = [
-  [
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%A7%D0%BE%D1%80%D0%B1%D0%B0-%D0%BE%D1%82-%D0%B0%D0%B3%D0%BD%D0%B5%D1%88%D0%BA%D0%B8-%D1%87%D1%80%D0%B5%D0%B2%D1%86%D0%B0-%D0%B8-%D0%90%D0%B3%D0%BD%D0%B5%D1%88%D0%BA%D0%B8-%D0%B5%D0%B7%D0%B8%D1%87%D0%B5%D1%82%D0%B0-%D0%B2-%D1%81%D0%B5%D0%BB%D1%81%D0%BA%D0%BE-%D1%85%D0%BB%D0%B5%D0%B1%D1%87%D0%B5.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%97%D0%B5%D0%BB%D0%BD%D0%B8%D0%BA%D0%B0-%D0%B8-%D0%A1%D0%BB%D0%B0%D0%B4%D0%BA%D0%B8%D1%82%D0%B5-%D0%B8%D0%B7%D0%BA%D1%83%D1%88%D0%B5%D0%BD%D0%B8%D1%8F-2026-%D0%B2-%D1%81.-%D0%96%D0%B0%D0%B1%D0%BE%D0%BA%D1%80%D1%8A%D1%82.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%A1%D0%B0%D0%BC%D0%B0%D1%80%D0%B4%D0%B0%D0%BB%D0%B0%D1%82%D0%B0-%D0%B2-%D0%9D%D0%BE%D0%B2%D0%B0-%D0%97%D0%B0%D0%B3%D0%BE%D1%80%D0%B0-2026.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%92%D1%82%D0%BE%D1%80%D0%B8%D1%8F%D1%82-%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%A1%D0%B2%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D1%82%D0%B5-%D1%83%D1%88%D0%B8-%D0%B2-%D0%A1%D1%82%D0%B0%D1%80%D0%B0-%D0%97%D0%B0%D0%B3%D0%BE%D1%80%D0%B0-2026.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%9B%D0%BE%D0%BF%D1%83%D1%88%D0%B0-2026-%D0%B2-%D1%81.-%D0%91%D1%80%D1%8F%D0%B3%D0%BE%D0%B2%D0%B8%D1%86%D0%B0.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%BD%D0%BE-%D1%84%D0%BE%D0%BB%D0%BA%D0%BB%D0%BE%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%9A%D0%B0%D1%87%D0%B0%D0%BC%D0%B0%D0%BA-%D0%B8-%D0%A8%D0%BE%D0%BF%D1%81%D0%BA%D0%B0-%D1%82%D0%BE%D0%BF%D0%B5%D0%BD%D0%B8%D1%86%D0%B0.jpg",
-  ],
-  [
-    "https://festivali.eu/wp-content/uploads/2025/02/%D0%A4%D0%B5%D1%81%D1%82%D0%B8%D0%B2%D0%B0%D0%BB-%D0%BD%D0%B0-%D0%B7%D0%B0%D0%BD%D0%B0%D1%8F%D1%82%D0%B8%D1%82%D0%B5-%D0%B8-%D0%B8%D0%B7%D0%BA%D1%83%D1%81%D1%82%D0%B2%D0%B0%D1%82%D0%B0-%E2%80%93-%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D1%87-2025.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%94%D0%9D%D0%98-%D0%BD%D0%B0-%D0%9E%D1%82%D0%B2%D0%BE%D1%80%D0%B5%D0%BD%D0%B8%D1%82%D0%B5-%D0%B2%D1%80%D0%B0%D1%82%D0%B8-%D0%B2-%D0%A1%D0%B2%D0%B8%D0%BD%D0%B5%D0%BA%D0%BE%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%81-%D0%93%D0%BE%D0%BB%D1%8F%D0%BC%D0%BE-%D0%92%D1%80%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%9C%D0%BB%D0%B0%D0%B4%D0%B5%D0%B6%D0%BA%D0%B0-%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%BD%D0%B0-%D1%81%D1%86%D0%B5%D0%BD%D0%B0-%D0%B2-%D0%9C%D0%BE%D0%BC%D1%87%D0%B8%D0%BB%D0%B3%D1%80%D0%B0%D0%B4-2026.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%A5%D0%90%D0%9F%D0%9D%D0%98-%D0%98-%D0%94%D0%90%D0%A0%D0%98-%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D1%81-%D0%BA%D0%B0%D1%83%D0%B7%D0%B0.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%A1%D0%B0%D0%BC%D0%B0%D1%80%D0%B4%D0%B0%D0%BB%D0%B0%D1%82%D0%B0-%D0%B2-%D0%9D%D0%BE%D0%B2%D0%B0-%D0%97%D0%B0%D0%B3%D0%BE%D1%80%D0%B0-2026.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%97%D0%B5%D0%BB%D0%BD%D0%B8%D0%BA%D0%B0-%D0%B8-%D0%A1%D0%BB%D0%B0%D0%B4%D0%BA%D0%B8%D1%82%D0%B5-%D0%B8%D0%B7%D0%BA%D1%83%D1%88%D0%B5%D0%BD%D0%B8%D1%8F-2026-%D0%B2-%D1%81.-%D0%96%D0%B0%D0%B1%D0%BE%D0%BA%D1%80%D1%8A%D1%82.jpg",
-  ],
-  [
-    "https://festivali.eu/wp-content/uploads/2025/02/%D0%A4%D0%B5%D1%81%D1%82%D0%B8%D0%B2%D0%B0%D0%BB-%D0%BD%D0%B0-%D0%B7%D0%B0%D0%BD%D0%B0%D1%8F%D1%82%D0%B8%D1%82%D0%B5-%D0%B8-%D0%B8%D0%B7%D0%BA%D1%83%D1%81%D1%82%D0%B2%D0%B0%D1%82%D0%B0-%E2%80%93-%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D1%87-2025.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%A7%D0%BE%D1%80%D0%B1%D0%B0-%D0%BE%D1%82-%D0%B0%D0%B3%D0%BD%D0%B5%D1%88%D0%BA%D0%B8-%D1%87%D1%80%D0%B5%D0%B2%D1%86%D0%B0-%D0%B8-%D0%90%D0%B3%D0%BD%D0%B5%D1%88%D0%BA%D0%B8-%D0%B5%D0%B7%D0%B8%D1%87%D0%B5%D1%82%D0%B0-%D0%B2-%D1%81%D0%B5%D0%BB%D1%81%D0%BA%D0%BE-%D1%85%D0%BB%D0%B5%D0%B1%D1%87%D0%B5.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%BD%D0%BE-%D1%84%D0%BE%D0%BB%D0%BA%D0%BB%D0%BE%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%9A%D0%B0%D1%87%D0%B0%D0%BC%D0%B0%D0%BA-%D0%B8-%D0%A8%D0%BE%D0%BF%D1%81%D0%BA%D0%B0-%D1%82%D0%BE%D0%BF%D0%B5%D0%BD%D0%B8%D1%86%D0%B0.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%9C%D0%BB%D0%B0%D0%B4%D0%B5%D0%B6%D0%BA%D0%B0-%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%BD%D0%B0-%D1%81%D1%86%D0%B5%D0%BD%D0%B0-%D0%B2-%D0%9C%D0%BE%D0%BC%D1%87%D0%B8%D0%BB%D0%B3%D1%80%D0%B0%D0%B4-2026.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/04/%D0%92%D1%82%D0%BE%D1%80%D0%B8%D1%8F%D1%82-%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%A1%D0%B2%D0%B8%D0%BD%D1%81%D0%BA%D0%B8%D1%82%D0%B5-%D1%83%D1%88%D0%B8-%D0%B2-%D0%A1%D1%82%D0%B0%D1%80%D0%B0-%D0%97%D0%B0%D0%B3%D0%BE%D1%80%D0%B0-2026.jpg",
-    "https://festivali.eu/wp-content/uploads/2026/03/%D0%94%D0%9D%D0%98-%D0%BD%D0%B0-%D0%9E%D1%82%D0%B2%D0%BE%D1%80%D0%B5%D0%BD%D0%B8%D1%82%D0%B5-%D0%B2%D1%80%D0%B0%D1%82%D0%B8-%D0%B2-%D0%A1%D0%B2%D0%B8%D0%BD%D0%B5%D0%BA%D0%BE%D0%BC%D0%BF%D0%BB%D0%B5%D0%BA%D1%81-%D0%93%D0%BE%D0%BB%D1%8F%D0%BC%D0%BE-%D0%92%D1%80%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE.jpg",
-  ],
+const fallbackSlides = [
+  "https://festivali.eu/wp-content/uploads/2026/04/%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%A7%D0%BE%D1%80%D0%B1%D0%B0-%D0%BE%D1%82-%D0%B0%D0%B3%D0%BD%D0%B5%D1%88%D0%BA%D0%B8-%D1%87%D1%80%D0%B5%D0%B2%D1%86%D0%B0-%D0%B8-%D0%90%D0%B3%D0%BD%D0%B5%D1%88%D0%BA%D0%B8-%D0%B5%D0%B7%D0%B8%D1%87%D0%B5%D1%82%D0%B0-%D0%B2-%D1%81%D0%B5%D0%BB%D1%81%D0%BA%D0%BE-%D1%85%D0%BB%D0%B5%D0%B1%D1%87%D0%B5.jpg",
+  "https://festivali.eu/wp-content/uploads/2026/04/%D0%9F%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%BD%D0%B0-%D0%97%D0%B5%D0%BB%D0%BD%D0%B8%D0%BA%D0%B0-%D0%B8-%D0%A1%D0%BB%D0%B0%D0%B4%D0%BA%D0%B8%D1%82%D0%B5-%D0%B8%D0%B7%D0%BA%D1%83%D1%88%D0%B5%D0%BD%D0%B8%D1%8F-2026-%D0%B2-%D1%81.-%D0%96%D0%B0%D0%B1%D0%BE%D0%BA%D1%80%D1%8A%D1%82.jpg",
+  "https://festivali.eu/wp-content/uploads/2026/03/%D0%9C%D0%BB%D0%B0%D0%B4%D0%B5%D0%B6%D0%BA%D0%B0-%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%BD%D0%B0-%D1%81%D1%86%D0%B5%D0%BD%D0%B0-%D0%B2-%D0%9C%D0%BE%D0%BC%D1%87%D0%B8%D0%BB%D0%B3%D1%80%D0%B0%D0%B4-2026.jpg",
+  "https://festivali.eu/wp-content/uploads/2026/03/%D0%9A%D1%83%D0%BB%D0%B8%D0%BD%D0%B0%D1%80%D0%BD%D0%BE-%D1%84%D0%BE%D0%BB%D0%BA%D0%BB%D0%BE%D1%80%D0%B5%D0%BD-%D0%BF%D1%80%D0%B0%D0%B7%D0%BD%D0%B8%D0%BA-%D0%9A%D0%B0%D1%87%D0%B0%D0%BC%D0%B0%D0%BA-%D0%B8-%D0%A8%D0%BE%D0%BF%D1%81%D0%BA%D0%B0-%D1%82%D0%BE%D0%BF%D0%B5%D0%BD%D0%B8%D1%86%D0%B0.jpg",
+  "https://festivali.eu/wp-content/uploads/2025/02/%D0%A4%D0%B5%D1%81%D1%82%D0%B8%D0%B2%D0%B0%D0%BB-%D0%BD%D0%B0-%D0%B7%D0%B0%D0%BD%D0%B0%D1%8F%D1%82%D0%B8%D1%82%D0%B5-%D0%B8-%D0%B8%D0%B7%D0%BA%D1%83%D1%81%D1%82%D0%B2%D0%B0%D1%82%D0%B0-%E2%80%93-%D0%94%D0%BE%D0%B1%D1%80%D0%B8%D1%87-2025.jpg",
 ];
 
-const tileLayout = [
-  "col-span-4 row-span-3",
-  "col-span-4 row-span-2",
-  "col-span-4 row-span-4",
-  "col-span-5 row-span-3",
-  "col-span-3 row-span-4",
-  "col-span-4 row-span-2",
-];
+export default async function HomePage() {
+  const events = await listPublicEvents({ page: 1, pageSize: 24 });
+  const eventSlides = [...new Set(events.items.map((event) => event.imageUrl).filter(Boolean))] as string[];
+  const slides = eventSlides.length >= 3 ? eventSlides.slice(0, 8) : fallbackSlides;
 
-export default function HomePage() {
   return (
     <div
       className="relative min-h-[calc(100vh-80px)] overflow-hidden"
       data-testid="home-page"
     >
       <div className="pointer-events-none absolute inset-0">
-        {collageSlides.map((slide, slideIndex) => (
+        {slides.map((imageUrl, slideIndex) => (
           <div
-            key={`collage-slide-${slideIndex}`}
-            className="absolute inset-0 home-collage-slide"
-            style={{ animationDelay: `${slideIndex * 8}s` }}
-          >
-            <div className="grid h-full grid-cols-12 grid-rows-6 gap-3 p-4 md:p-8">
-              {slide.map((imageUrl, imageIndex) => (
-                <div
-                  key={`${imageUrl}-${imageIndex}`}
-                  className={`${tileLayout[imageIndex]} rounded-3xl border border-white/20 bg-cover bg-center shadow-lg`}
-                  style={{ backgroundImage: `url(${imageUrl})` }}
-                />
-              ))}
-            </div>
-          </div>
+            key={`${imageUrl}-${slideIndex}`}
+            className="absolute inset-0 home-photo-slide"
+            style={{
+              animationDelay: `${slideIndex * 5}s`,
+              backgroundImage: `url(${imageUrl})`,
+            }}
+          />
         ))}
       </div>
 

@@ -136,27 +136,29 @@ a.btn-primary:hover {
   box-shadow: 0 4px 18px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
-/* ── Home collage slideshow ──────────────────────────────────────────────── */
-.home-collage-slide {
+/* ── Home slideshow background ───────────────────────────────────────────── */
+.home-photo-slide {
   opacity: 0;
-  filter: blur(1.5px) saturate(0.95);
-  transform: scale(1.04);
-  animation: collage-fade 24s infinite;
+  background-size: cover;
+  background-position: center;
+  filter: blur(7px) saturate(0.95);
+  transform: scale(1.08);
+  animation: home-photo-fade 40s infinite;
 }
 
-@keyframes collage-fade {
+@keyframes home-photo-fade {
   0% {
     opacity: 0;
-    transform: scale(1.05);
+    transform: scale(1.1);
   }
   8%,
-  28% {
+  20% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.04);
   }
-  36%,
+  28%,
   100% {
     opacity: 0;
-    transform: scale(1.03);
+    transform: scale(1.08);
   }
 }
