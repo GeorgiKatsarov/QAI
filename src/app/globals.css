@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
+/* ── Color tokens ─────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background:          #EDF5FF;   /* soft sky blue */
+  --foreground:          #1A4068;   /* deep ocean blue — no black */
+
+  --card:                #FFFFFF;
+  --card-foreground:     #1A4068;
+
+  --primary:             #4A9ADE;   /* cornflower blue */
+  --primary-foreground:  #FFFFFF;
+
+  --secondary:           #B8D9F5;   /* powder blue */
+  --secondary-foreground:#1A4068;
+
+  --muted:               #D6ECFA;   /* misty blue */
+  --muted-foreground:    #5A87B0;   /* slate blue */
+
+  --accent:              #FCE8F4;   /* blush pink */
+  --accent-foreground:   #B0539A;   /* rose */
+
+  --border:              #BED9F2;   /* light blue border */
+  --input:               #BED9F2;
+  --ring:                #4A9ADE;
+
+  --destructive:         #E07070;
+  --destructive-foreground: #FFFFFF;
 }
 
+/* ── Map tokens → Tailwind utility classes ────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background:              var(--background);
+  --color-foreground:              var(--foreground);
+
+  --color-card:                    var(--card);
+  --color-card-foreground:         var(--card-foreground);
+
+  --color-primary:                 var(--primary);
+  --color-primary-foreground:      var(--primary-foreground);
+
+  --color-secondary:               var(--secondary);
+  --color-secondary-foreground:    var(--secondary-foreground);
+
+  --color-muted:                   var(--muted);
+  --color-muted-foreground:        var(--muted-foreground);
+
+  --color-accent:                  var(--accent);
+  --color-accent-foreground:       var(--accent-foreground);
+
+  --color-border:                  var(--border);
+  --color-input:                   var(--input);
+  --color-ring:                    var(--ring);
+
+  --color-destructive:             var(--destructive);
+  --color-destructive-foreground:  var(--destructive-foreground);
+
+  --font-sans: var(--font-nunito), "Nunito", ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base styles ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), "Nunito", ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Subtle dot-grid background pattern */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(circle, #bdd9f2 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ── Typography ───────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+/* ── Input / select base ──────────────────────────────────────────────────── */
+input,
+select,
+textarea {
+  background: #FFFFFF;
+  color: var(--foreground);
+  border-color: var(--border);
+  border-radius: 0.6rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar          { width: 7px; height: 7px; }
+::-webkit-scrollbar-track    { background: var(--muted); }
+::-webkit-scrollbar-thumb    { background: var(--secondary); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ── Card / panel helper ──────────────────────────────────────────────────── */
+.card-soft {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+/* ── Button hover glow ────────────────────────────────────────────────────── */
+button[type="submit"]:not(:disabled):hover,
+a.btn-primary:hover {
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--primary) 35%, transparent);
 }
