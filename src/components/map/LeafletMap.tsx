@@ -47,10 +47,15 @@ function formatDate(iso: string) {
 
 interface Props {
   events: EventCardDto[];
+  focusLocation?: {
+    latitude: number;
+    longitude: number;
+  } | null;
+  focusRadiusKm?: number;
   onSelectEvent?: (event: EventCardDto) => void;
 }
 
-export function LeafletMap({ events, onSelectEvent }: Props) {
+export function LeafletMap({ events, focusLocation, focusRadiusKm, onSelectEvent }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import("leaflet").Map | null>(null);
 
@@ -118,6 +123,31 @@ export function LeafletMap({ events, onSelectEvent }: Props) {
       addMarkers(L, map, events, onSelectEvent);
     });
   }, [events, onSelectEvent]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    if (!focusLocation || !focusRadiusKm) {
+      map.flyTo(BULGARIA_CENTER, BULGARIA_ZOOM, {
+        duration: 0.8,
+      });
+      return;
+    }
+
+    import("leaflet").then((mod) => {
+      const L = mod.default;
+      const bounds = L.latLng(focusLocation.latitude, focusLocation.longitude).toBounds(
+        focusRadiusKm * 2000
+      );
+
+      map.flyToBounds(bounds, {
+        padding: [48, 48],
+        maxZoom: 13,
+        duration: 0.8,
+      });
+    });
+  }, [focusLocation, focusRadiusKm]);
 
   return (
     <div

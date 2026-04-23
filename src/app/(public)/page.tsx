@@ -71,7 +71,7 @@ const tileLayout = [
 export default function HomePage() {
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="relative min-h-[calc(100vh-80px)] overflow-hidden"
       data-testid="home-page"
     >
       <div className="pointer-events-none absolute inset-0">
@@ -92,6 +92,45 @@ export default function HomePage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="absolute inset-0 bg-[#10253f]/45 backdrop-blur-md" />
+
+      <div className="relative z-10 container mx-auto flex flex-col items-center px-4 py-16 text-white md:py-20">
+        <div className="mb-12 max-w-2xl space-y-4 text-center">
+          <div className="inline-block rounded-full bg-white/15 px-4 py-1 text-sm font-semibold text-white/90">
+            ✨ Bulgaria&apos;s event discovery platform
+          </div>
+          <h1 className="text-4xl font-extrabold leading-tight md:text-6xl">
+            Explore a living collage
+            <span className="block bg-gradient-to-r from-[#95d7ff] to-[#f5c5ff] bg-clip-text text-transparent">
+              of events near you
+            </span>
+          </h1>
+          <p className="text-lg text-white/85">
+            Music, exhibitions, talks, markets, and nightlife—discover what&apos;s
+            happening across Bulgaria.
+          </p>
+        </div>
+
+        <div className="grid w-full max-w-lg grid-cols-2 gap-5">
+          {cards.map(({ href, testId, icon: Icon, label, sub, gradient }) => (
+            <Link
+              key={href}
+              href={href}
+              data-testid={testId}
+              className={`bg-gradient-to-br ${gradient} flex flex-col items-center gap-3 rounded-2xl p-7 text-center text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-xl`}
+            >
+              <span className="flex size-11 items-center justify-center rounded-xl bg-white/25">
+                <Icon className="size-5" />
+              </span>
+              <div>
+                <p className="text-base font-bold">{label}</p>
+                <p className="text-sm opacity-80">{sub}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="absolute inset-0 bg-[#0f2740]/35 backdrop-blur-sm" />

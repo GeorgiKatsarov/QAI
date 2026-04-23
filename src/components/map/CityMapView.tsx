@@ -4,6 +4,11 @@ import { useState } from "react";
 import type { EventCardDto } from "@/lib/mappers/events";
 import { MapWrapper } from "./MapWrapper";
 
+type FocusLocation = {
+  latitude: number;
+  longitude: number;
+};
+
 function formatDate(iso: string) {
   return new Intl.DateTimeFormat("en-GB", {
     dateStyle: "medium",
@@ -12,7 +17,15 @@ function formatDate(iso: string) {
   }).format(new Date(iso));
 }
 
-export function CityMapView({ events }: { events: EventCardDto[] }) {
+export function CityMapView({
+  events,
+  focusLocation,
+  focusRadiusKm,
+}: {
+  events: EventCardDto[];
+  focusLocation?: FocusLocation | null;
+  focusRadiusKm?: number;
+}) {
   const [selected, setSelected] = useState<EventCardDto | null>(null);
 
   if (!events.length) {
@@ -28,7 +41,12 @@ export function CityMapView({ events }: { events: EventCardDto[] }) {
 
   return (
     <div className="relative h-full w-full" data-testid="map-map-view">
-      <MapWrapper events={events} onSelectEvent={setSelected} />
+      <MapWrapper
+        events={events}
+        focusLocation={focusLocation}
+        focusRadiusKm={focusRadiusKm}
+        onSelectEvent={setSelected}
+      />
 
       {/* Selected event card — floats over the map bottom-left */}
       {selected && (
