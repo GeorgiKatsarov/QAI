@@ -1,6 +1,37 @@
 import { listPublicEvents } from "@/lib/services/events";
+import { scrapeVisitMyBulgariaEvents } from "@/lib/services/visitMyBulgaria";
 import { EventList } from "@/components/events/EventList";
 import { CityMapView } from "@/components/map/CityMapView";
+import type { EventCardDto } from "@/lib/mappers/events";
+
+function filterEvents(
+  events: EventCardDto[],
+  params: Record<string, string | string[] | undefined>
+) {
+  const search = typeof params.search === "string" ? params.search.toLowerCase() : "";
+  const city = typeof params.city === "string" ? params.city.toLowerCase() : "";
+  const category = typeof params.category === "string" ? params.category : "";
+  const freeOnly = params.freeOnly === "true";
+
+  return events.filter((event) => {
+    if (search) {
+      const haystack = [event.title, event.summary, event.city, event.venueName].join(" ").toLowerCase();
+      if (!haystack.includes(search)) {
+        return false;
+      }
+    }
+    if (city && event.city.toLowerCase() !== city) {
+      return false;
+    }
+    if (category && event.categorySlug !== category) {
+      return false;
+    }
+    if (freeOnly && !event.isFree) {
+      return false;
+    }
+    return true;
+  });
+}
 
 export default async function MapPage({
   searchParams,
@@ -14,6 +45,15 @@ export default async function MapPage({
     category: typeof params.category === "string" ? params.category : undefined,
     freeOnly: params.freeOnly === "true" || params.freeOnly === "false" ? params.freeOnly : undefined,
   });
+  const scrapedEvents = await scrapeVisitMyBulgariaEvents();
+  const merged = [...result.items];
+  for (const event of scrapedEvents) {
+    if (!merged.some((item) => item.slug === event.slug)) {
+      merged.push(event);
+    }
+  }
+  const filteredItems = filterEvents(merged, params);
+  const cityOptions = Array.from(new Set(merged.map((event) => event.city))).sort((a, b) => a.localeCompare(b));
 
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]" data-testid="map-page">
@@ -33,9 +73,11 @@ export default async function MapPage({
           data-testid="map-filter-city"
         >
           <option value="">All cities</option>
-          <option value="Sofia">Sofia</option>
-          <option value="Plovdiv">Plovdiv</option>
-          <option value="Varna">Varna</option>
+          {cityOptions.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
         </select>
         <select
           name="category"
@@ -55,12 +97,12 @@ export default async function MapPage({
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 p-4" data-testid="map-container">
-          <CityMapView events={result.items} />
+          <CityMapView events={filteredItems} />
         </div>
 
         <aside className="w-96 border-l border-border overflow-y-auto">
           <div className="p-4 space-y-3" data-testid="map-results-list">
-            <EventList events={result.items} testIdPrefix="map" />
+            <EventList events={filteredItems} testIdPrefix="map" />
           </div>
         </aside>
       </div>

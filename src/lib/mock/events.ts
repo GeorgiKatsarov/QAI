@@ -6,6 +6,8 @@ export type MockEvent = {
   city: string;
   venueName: string;
   startDateTime: string;
+  latitude?: number;
+  longitude?: number;
   category: { slug: string; name: string };
   source?: { name: string; url?: string };
   isFree: boolean;
@@ -20,6 +22,8 @@ export const mockEvents: MockEvent[] = [
     city: "Sofia",
     venueName: "National Palace of Culture",
     startDateTime: "2026-05-12T19:00:00.000Z",
+    latitude: 42.685311,
+    longitude: 23.319941,
     category: { slug: "music", name: "Music" },
     source: { name: "Manual Submission" },
     isFree: false,
@@ -32,6 +36,8 @@ export const mockEvents: MockEvent[] = [
     city: "Plovdiv",
     venueName: "Kapana District",
     startDateTime: "2026-05-21T10:00:00.000Z",
+    latitude: 42.149085,
+    longitude: 24.749579,
     category: { slug: "art", name: "Art & Exhibitions" },
     source: { name: "grabo.bg", url: "https://grabo.bg" },
     isFree: true,
@@ -44,6 +50,8 @@ export const mockEvents: MockEvent[] = [
     city: "Varna",
     venueName: "Varna Sea Gardens",
     startDateTime: "2026-06-01T08:00:00.000Z",
+    latitude: 43.21405,
+    longitude: 27.953809,
     category: { slug: "sports", name: "Sports" },
     source: { name: "Manual Submission" },
     isFree: false,
