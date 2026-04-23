@@ -148,15 +148,14 @@ a.btn-primary:hover {
 
 @keyframes home-photo-fade {
   0% {
-    opacity: 0;
-    transform: scale(1.1);
+    opacity: 1;
+    transform: scale(1.02);
   }
-  8%,
-  20% {
+  16% {
     opacity: 1;
     transform: scale(1.04);
   }
-  28%,
+  30%,
   100% {
     opacity: 0;
     transform: scale(1.08);
