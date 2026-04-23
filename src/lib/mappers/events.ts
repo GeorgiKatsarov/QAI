@@ -11,6 +11,7 @@ export type EventCardDto = {
   slug: string;
   title: string;
   summary: string | null;
+  description: string | null;
   city: string;
   venueName: string | null;
   startDateTime: string;
@@ -20,6 +21,7 @@ export type EventCardDto = {
   categorySlug: string | null;
   sourceName: string | null;
   sourceUrl: string | null;
+  imageUrl: string | null;
   isFree: boolean;
 };
 
@@ -29,6 +31,7 @@ export function toEventCardDto(event: EventWithRelations): EventCardDto {
     slug: event.slug,
     title: event.title,
     summary: event.summary,
+    description: event.description,
     city: event.city,
     venueName: event.venueName,
     startDateTime: event.startDateTime.toISOString(),
@@ -38,6 +41,7 @@ export function toEventCardDto(event: EventWithRelations): EventCardDto {
     categorySlug: event.category?.slug ?? null,
     sourceName: event.source?.name ?? null,
     sourceUrl: event.sourceUrl ?? event.source?.baseUrl ?? null,
+    imageUrl: event.imageUrl,
     isFree: event.isFree,
   };
 }
@@ -48,6 +52,7 @@ export function mockToEventCardDto(event: MockEvent): EventCardDto {
     slug: event.slug,
     title: event.title,
     summary: event.summary,
+    description: event.description ?? null,
     city: event.city,
     venueName: event.venueName,
     startDateTime: event.startDateTime,
@@ -57,6 +62,7 @@ export function mockToEventCardDto(event: MockEvent): EventCardDto {
     categorySlug: event.category.slug,
     sourceName: event.source?.name ?? null,
     sourceUrl: event.source?.url ?? null,
+    imageUrl: event.imageUrl ?? null,
     isFree: event.isFree,
   };
 }

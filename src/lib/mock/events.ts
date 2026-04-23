@@ -3,6 +3,7 @@ export type MockEvent = {
   slug: string;
   title: string;
   summary: string;
+  description?: string;
   city: string;
   venueName: string;
   startDateTime: string;
@@ -10,6 +11,7 @@ export type MockEvent = {
   longitude?: number;
   category: { slug: string; name: string };
   source?: { name: string; url?: string };
+  imageUrl?: string;
   isFree: boolean;
 };
 
