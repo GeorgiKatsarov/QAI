@@ -77,7 +77,7 @@ export default function HomePage() {
       <div className="pointer-events-none absolute inset-0">
         {collageSlides.map((slide, slideIndex) => (
           <div
-            key={slide[0]}
+            key={`collage-slide-${slideIndex}`}
             className="absolute inset-0 home-collage-slide"
             style={{ animationDelay: `${slideIndex * 8}s` }}
           >
