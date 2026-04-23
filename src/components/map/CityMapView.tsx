@@ -3,6 +3,26 @@
 import { useMemo, useState } from "react";
 import type { EventCardDto } from "@/lib/mappers/events";
 
+type LeafletMap = {
+  remove: () => void;
+  eachLayer: (fn: (layer: unknown) => void) => void;
+  removeLayer: (layer: unknown) => void;
+  fitBounds: (bounds: [number, number][], options?: { padding?: [number, number] }) => void;
+};
+
+type LeafletNamespace = {
+  map: (el: HTMLElement, options: Record<string, unknown>) => LeafletMap;
+  tileLayer: (url: string, options: Record<string, unknown>) => { addTo: (map: LeafletMap) => void };
+  polygon: (latlngs: [number, number][], options: Record<string, unknown>) => { addTo: (map: LeafletMap) => void };
+  divIcon: (options: Record<string, unknown>) => unknown;
+  marker: (latlng: [number, number], options?: Record<string, unknown>) => {
+    addTo: (map: LeafletMap) => {
+      on: (event: string, handler: (eventData: Record<string, unknown>) => void) => void;
+    };
+    bindTooltip: (html: string, options?: Record<string, unknown>) => void;
+  };
+};
+
 const cityCoordinates: Record<string, { latitude: number; longitude: number }> = {
   Sofia: { latitude: 42.6977, longitude: 23.3219 },
   Plovdiv: { latitude: 42.1354, longitude: 24.7453 },
@@ -12,11 +32,56 @@ const cityCoordinates: Record<string, { latitude: number; longitude: number }> =
   "Stara Zagora": { latitude: 42.4258, longitude: 25.6345 },
 };
 
-const BULGARIA_BOUNDS = {
-  minLatitude: 41.2,
-  maxLatitude: 44.25,
-  minLongitude: 22.3,
-  maxLongitude: 28.7,
+const BULGARIA_OUTLINE: [number, number][] = [
+  [44.2176, 22.3571],
+  [44.0414, 22.7364],
+  [43.8602, 23.1805],
+  [43.7468, 23.9745],
+  [43.8232, 24.7192],
+  [43.7424, 25.5258],
+  [43.6636, 26.3002],
+  [43.6756, 27.0669],
+  [43.8127, 27.7217],
+  [43.5872, 28.5732],
+  [42.959, 28.0014],
+  [42.4836, 27.658],
+  [42.1399, 27.3048],
+  [41.9803, 26.8971],
+  [41.7869, 26.117],
+  [41.7166, 25.0897],
+  [41.453, 24.4289],
+  [41.3092, 23.9187],
+  [41.2703, 23.031],
+  [41.4129, 22.4576],
+  [41.7828, 22.7057],
+  [42.3049, 22.44],
+  [42.5975, 22.9726],
+  [43.0536, 22.5001],
+  [43.4623, 22.4104],
+  [44.2176, 22.3571],
+];
+
+const categoryColors: Record<string, string> = {
+  music: "#8B5CF6",
+  art: "#EC4899",
+  food: "#F59E0B",
+  sports: "#10B981",
+  family: "#3B82F6",
+  default: "#64748B",
+};
+
+type EventMarker = {
+  id: string;
+  latitude: number;
+  longitude: number;
+  event: EventCardDto;
+  color: string;
+};
+
+type HoverCard = {
+  event: EventCardDto;
+  x: number;
+  y: number;
 };
 
 const categoryStyles: Record<string, { color: string; ring: string }> = {
