@@ -132,24 +132,31 @@ export function CityMapView({ events }: { events: EventCardDto[] }) {
                 <stop offset="100%" stopColor="#BFDFFF" />
               </linearGradient>
               <linearGradient id="bgLand" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#A8D08D" />
-                <stop offset="65%" stopColor="#8FC379" />
-                <stop offset="100%" stopColor="#74B764" />
+                <stop offset="0%" stopColor="#A6CF87" />
+                <stop offset="65%" stopColor="#8CBE72" />
+                <stop offset="100%" stopColor="#6EAB5D" />
               </linearGradient>
             </defs>
             <rect x="0" y="0" width="1000" height="620" rx="22" fill="url(#bgSea)" />
             <path
-              d="M84 315l40-56 48-12 36-54 74-26 61 12 62-39 94 8 47 34 55-8 72 42 90 10 63 71-22 42 35 49-44 35-111 10-71 34-85-14-45 24-78-7-58-45-86-26-76-3-71-55z"
+              d="M88 320l35-58 53-18 44-52 78-23 70 10 58-23 54-12 84 10 73 35 69-2 48 24 52-4 52 25 72 5 65 32 26 43-18 36 28 42-37 36-75 17-66-4-75 26-66-8-67 19-72-16-43 9-67-15-57-35-61-19-69-1-56-27-50-42z"
               fill="url(#bgLand)"
-              stroke="#3F7A3F"
-              strokeWidth="8"
+              stroke="#3B7642"
+              strokeWidth="6"
               strokeLinejoin="round"
             />
             <path
-              d="M772 205c60 20 114 68 120 136 8 75-40 153-124 201"
+              d="M175 315l70-45 99-17 80-34 129 15 93 30 114 4 89 30"
+              fill="none"
+              stroke="#6EA95E"
+              strokeWidth="4"
+              opacity="0.45"
+            />
+            <path
+              d="M790 214c56 20 111 65 118 128 8 73-35 149-114 201"
               fill="none"
               stroke="#9ED0FB"
-              strokeWidth="22"
+              strokeWidth="18"
               strokeLinecap="round"
             />
           </svg>
@@ -172,9 +179,12 @@ export function CityMapView({ events }: { events: EventCardDto[] }) {
                 data-testid={`map-marker-${index + 1}`}
               >
                 <span
-                  className={`block h-4 w-4 rounded-full ring-4 ${marker.ringClass} shadow-md`}
-                  style={{ backgroundColor: marker.color }}
-                />
+                  className={`grid h-8 w-8 place-items-center rounded-full bg-background/90 text-lg shadow-md ring-2 ${marker.ringClass}`}
+                  style={{ color: marker.color }}
+                  aria-hidden="true"
+                >
+                  📍
+                </span>
               </button>
             );
           })}
