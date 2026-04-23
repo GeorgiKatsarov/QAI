@@ -66,38 +66,6 @@ export default async function HomePage() {
 
       <div className="absolute inset-0 bg-[#10253f]/45 backdrop-blur-md" />
 
-      <div className="relative z-10 container mx-auto flex flex-col items-center px-4 py-16 text-white md:py-20">
-        <div className="mb-12 max-w-2xl space-y-4 text-center">
-          <h1 className="text-4xl font-extrabold leading-tight text-white md:text-6xl">
-            Разгледай жива палитра
-            <span className="block text-white">от събития около теб</span>
-          </h1>
-          <p className="text-lg text-white">
-            Музика, изложби, лекции, пазари и нощен живот — открий какво се случва
-            из цяла България.
-          </p>
-        </div>
-
-        <div className="grid w-full max-w-lg grid-cols-2 gap-5">
-          {cards.map(({ href, testId, icon: Icon, label, sub }) => (
-            <Link
-              key={href}
-              href={href}
-              data-testid={testId}
-              className="flex flex-col items-center gap-3 rounded-2xl border border-white/60 bg-white/45 p-7 text-center text-slate-900 shadow-md backdrop-blur-md transition-all hover:-translate-y-0.5 hover:bg-white/55 hover:shadow-xl"
-            >
-              <span className="flex size-11 items-center justify-center rounded-xl bg-white/70 text-slate-900">
-                <Icon className="size-5" />
-              </span>
-              <div>
-                <p className="text-base font-bold">{label}</p>
-                <p className="text-sm text-slate-700">{sub}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       <div className="absolute inset-0 bg-[#d8e8e2]/38 backdrop-blur-[1.5px]" />
 
       <div className="relative z-10 container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-white">
