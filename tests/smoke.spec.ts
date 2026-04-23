@@ -144,6 +144,36 @@ test.describe("Notification form fields", () => {
   });
 });
 
+test.describe("Notification subscription flow", () => {
+  test("valid signup succeeds", async ({ page }) => {
+    await page.goto("/notifications");
+    await page.getByTestId("subscription-email-input").fill("subscriber@example.com");
+    await page.getByTestId("subscription-city-select").selectOption(["Sofia", "Varna"]);
+    await page.getByTestId("subscription-category-select").selectOption(["music", "family"]);
+    await page.getByTestId("subscription-frequency-select").selectOption("DAILY");
+    await page.getByTestId("subscription-submit-button").click();
+
+    await expect(page.getByTestId("subscription-success")).toBeVisible();
+  });
+
+  test("selected preferences persist in UI", async ({ page }) => {
+    await page.goto("/notifications");
+    await page.getByTestId("subscription-city-select").selectOption(["Plovdiv"]);
+    await page.getByTestId("subscription-category-select").selectOption(["sports"]);
+    await page.getByTestId("subscription-frequency-select").selectOption("WEEKLY");
+
+    await expect(page.getByTestId("subscription-city-select")).toHaveValue(["Plovdiv"]);
+    await expect(page.getByTestId("subscription-category-select")).toHaveValue(["sports"]);
+    await expect(page.getByTestId("subscription-frequency-select")).toHaveValue("WEEKLY");
+  });
+
+  test("invalid signup shows validation error", async ({ page }) => {
+    await page.goto("/notifications");
+    await page.getByTestId("subscription-submit-button").click();
+    await expect(page.getByTestId("subscription-error")).toBeVisible();
+  });
+});
+
 
 test.describe("Event discovery and details", () => {
   test("map renders seeded/mock event cards", async ({ page }) => {
