@@ -10,6 +10,7 @@ export async function POST(req: Request) {
       ok: true,
       subscriptionId: subscription.id,
       confirmationToken: subscription.confirmationToken,
+      unsubscribeToken: subscription.unsubscribeToken,
     });
   } catch (error) {
     return NextResponse.json(

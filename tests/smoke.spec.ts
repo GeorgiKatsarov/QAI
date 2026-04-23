@@ -202,3 +202,38 @@ test.describe("Submit flow", () => {
     await expect(page.getByTestId("submit-success")).toBeVisible();
   });
 });
+
+
+test.describe("Notification confirmation and unsubscribe routes", () => {
+  test("valid confirmation token shows success", async ({ page }) => {
+    await page.goto("/notifications/confirm?token=mock-token");
+    await expect(page.getByTestId("notifications-confirm-page")).toBeVisible();
+    await expect(page.getByTestId("subscription-confirm-success")).toBeVisible();
+  });
+
+  test("invalid confirmation token shows error", async ({ page }) => {
+    await page.goto("/notifications/confirm?token=bad-token");
+    await expect(page.getByTestId("subscription-confirm-invalid")).toBeVisible();
+  });
+
+  test("valid unsubscribe token shows success", async ({ page }) => {
+    await page.goto("/notifications/unsubscribe?token=mock-unsubscribe-token");
+    await expect(page.getByTestId("notifications-unsubscribe-page")).toBeVisible();
+    await expect(page.getByTestId("subscription-unsubscribe-success")).toBeVisible();
+  });
+
+  test("invalid unsubscribe token shows error", async ({ page }) => {
+    await page.goto("/notifications/unsubscribe?token=bad-token");
+    await expect(page.getByTestId("subscription-unsubscribe-invalid")).toBeVisible();
+  });
+
+  test("signup success renders confirmation and unsubscribe links", async ({ page }) => {
+    await page.goto("/notifications");
+    await page.getByTestId("subscription-email-input").fill("subscriber@example.com");
+    await page.getByTestId("subscription-submit-button").click();
+
+    await expect(page.getByTestId("subscription-success")).toBeVisible();
+    await expect(page.getByTestId("subscription-confirm-link")).toBeVisible();
+    await expect(page.getByTestId("subscription-unsubscribe-link")).toBeVisible();
+  });
+});

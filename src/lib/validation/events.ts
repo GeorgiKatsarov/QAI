@@ -45,3 +45,10 @@ export const notificationSubscriptionSchema = z.object({
 });
 
 export type NotificationSubscriptionInput = z.infer<typeof notificationSubscriptionSchema>;
+
+
+export const subscriptionTokenSchema = z.object({
+  token: z.string().trim().min(1, "Token is required"),
+});
+
+export type SubscriptionTokenInput = z.infer<typeof subscriptionTokenSchema>;
