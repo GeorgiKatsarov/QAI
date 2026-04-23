@@ -14,6 +14,8 @@ export type EventCardDto = {
   city: string;
   venueName: string | null;
   startDateTime: string;
+  latitude: number | null;
+  longitude: number | null;
   category: string | null;
   categorySlug: string | null;
   sourceName: string | null;
@@ -30,6 +32,8 @@ export function toEventCardDto(event: EventWithRelations): EventCardDto {
     city: event.city,
     venueName: event.venueName,
     startDateTime: event.startDateTime.toISOString(),
+    latitude: event.latitude,
+    longitude: event.longitude,
     category: event.category?.name ?? null,
     categorySlug: event.category?.slug ?? null,
     sourceName: event.source?.name ?? null,
@@ -47,6 +51,8 @@ export function mockToEventCardDto(event: MockEvent): EventCardDto {
     city: event.city,
     venueName: event.venueName,
     startDateTime: event.startDateTime,
+    latitude: event.latitude ?? null,
+    longitude: event.longitude ?? null,
     category: event.category.name,
     categorySlug: event.category.slug,
     sourceName: event.source?.name ?? null,
