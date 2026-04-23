@@ -10,6 +10,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "events:import-real": "tsx scripts/import-real-events.ts",
+    "events:import-festivali": "tsx scripts/import-festivali-events.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",

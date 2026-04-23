@@ -1,4 +1,4 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEventBySlug } from "@/lib/services/events";
@@ -30,13 +30,11 @@ export default async function EventDetailsPage({
         {event.venueName ?? "Мястото се уточнява"} · {event.city}
       </p>
       {event.imageUrl ? (
-        <Image
+        <img
           src={event.imageUrl}
           alt={event.title}
-          width={1200}
-          height={675}
-          className="mt-6 aspect-[16/9] w-full rounded-2xl border border-border object-cover"
-          priority
+          className="mt-6 block h-auto max-h-[75vh] w-full rounded-2xl border border-border bg-muted/20 object-contain"
+          loading="eager"
         />
       ) : null}
       <p className="mt-6 text-lg leading-8">
