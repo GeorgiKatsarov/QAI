@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { EventCardDto } from "@/lib/mappers/events";
 
 type LeafletMap = {
@@ -84,6 +84,40 @@ type HoverCard = {
   y: number;
 };
 
+const categoryStyles: Record<string, { color: string; ring: string }> = {
+  music: { color: "#8B5CF6", ring: "ring-violet-200" },
+  art: { color: "#EC4899", ring: "ring-pink-200" },
+  food: { color: "#F59E0B", ring: "ring-amber-200" },
+  sports: { color: "#10B981", ring: "ring-emerald-200" },
+  family: { color: "#3B82F6", ring: "ring-sky-200" },
+  default: { color: "#64748B", ring: "ring-slate-200" },
+};
+
+type EventMarker = {
+  id: string;
+  x: number;
+  y: number;
+  event: EventCardDto;
+  color: string;
+  ringClass: string;
+};
+
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function toMapCoordinates(latitude: number, longitude: number) {
+  const xRatio =
+    (longitude - BULGARIA_BOUNDS.minLongitude) / (BULGARIA_BOUNDS.maxLongitude - BULGARIA_BOUNDS.minLongitude);
+  const yRatio =
+    (latitude - BULGARIA_BOUNDS.minLatitude) / (BULGARIA_BOUNDS.maxLatitude - BULGARIA_BOUNDS.minLatitude);
+
+  return {
+    x: clamp(xRatio * 100, 6, 94),
+    y: clamp((1 - yRatio) * 100, 8, 92),
+  };
+}
+
 function formatEventTime(dateString: string) {
   return new Intl.DateTimeFormat("en-GB", {
     dateStyle: "medium",
@@ -95,118 +129,28 @@ function formatEventTime(dateString: string) {
 function buildEventMarkers(events: EventCardDto[]): EventMarker[] {
   return events.map((event, index) => {
     const cityCoords = cityCoordinates[event.city];
-    const latitude = event.latitude ?? cityCoords?.latitude ?? 42 + (index % 8) * 0.1;
-    const longitude = event.longitude ?? cityCoords?.longitude ?? 23 + (index % 8) * 0.2;
-    const offset = ((index % 5) - 2) * 0.01;
+    const latitude = event.latitude ?? cityCoords?.latitude ?? 42 + (index % 8) * 0.18;
+    const longitude = event.longitude ?? cityCoords?.longitude ?? 23 + (index % 8) * 0.35;
+    const offset = ((index % 5) - 2) * 0.4;
+    const { x, y } = toMapCoordinates(latitude + offset * 0.03, longitude + offset * 0.03);
+    const style = categoryStyles[event.categorySlug ?? ""] ?? categoryStyles.default;
 
     return {
       id: event.id,
-      latitude: latitude + offset,
-      longitude: longitude + offset,
+      x,
+      y,
       event,
-      color: categoryColors[event.categorySlug ?? ""] ?? categoryColors.default,
+      color: style.color,
+      ringClass: style.ring,
     };
   });
 }
 
 export function CityMapView({ events }: { events: EventCardDto[] }) {
   const markers = useMemo(() => buildEventMarkers(events), [events]);
-  const mapRef = useRef<HTMLDivElement | null>(null);
-  const leafletMapRef = useRef<LeafletMap | null>(null);
-  const [hoverCard, setHoverCard] = useState<HoverCard | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<EventCardDto | null>(null);
-
-  useEffect(() => {
-    if (!mapRef.current || !markers.length) {
-      return;
-    }
-
-    let cancelled = false;
-
-    const setupMap = async () => {
-      if (!document.getElementById("leaflet-css")) {
-        const css = document.createElement("link");
-        css.id = "leaflet-css";
-        css.rel = "stylesheet";
-        css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-        document.head.appendChild(css);
-      }
-
-      if (!(window as typeof window & { L?: LeafletNamespace }).L) {
-        await new Promise<void>((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-          script.async = true;
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error("Failed to load Leaflet"));
-          document.body.appendChild(script);
-        });
-      }
-
-      if (cancelled || !mapRef.current) {
-        return;
-      }
-
-      const L = (window as typeof window & { L: LeafletNamespace }).L;
-
-      leafletMapRef.current?.remove();
-      const map = L.map(mapRef.current, { zoomControl: true, scrollWheelZoom: true, minZoom: 6, maxZoom: 15 });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
-      }).addTo(map);
-
-      L.polygon(BULGARIA_OUTLINE, {
-        color: "#14532D",
-        weight: 2,
-        fillColor: "#86EFAC",
-        fillOpacity: 0.2,
-      }).addTo(map);
-
-      map.fitBounds(BULGARIA_OUTLINE, { padding: [25, 25] });
-
-      markers.forEach((marker) => {
-        const icon = L.divIcon({
-          html: `<span style="font-size:24px;color:${marker.color};filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));">📍</span>`,
-          className: "",
-          iconSize: [24, 24],
-          iconAnchor: [12, 24],
-        });
-
-        const leafletMarker = L.marker([marker.latitude, marker.longitude], { icon }).addTo(map);
-
-        leafletMarker.bindTooltip(marker.event.title, { direction: "top", offset: [0, -18] });
-
-        leafletMarker.on("mouseover", (eventData) => {
-          const containerPoint = eventData.containerPoint as { x: number; y: number };
-          setHoverCard({ event: marker.event, x: containerPoint.x, y: containerPoint.y });
-        });
-
-        leafletMarker.on("mousemove", (eventData) => {
-          const containerPoint = eventData.containerPoint as { x: number; y: number };
-          setHoverCard({ event: marker.event, x: containerPoint.x, y: containerPoint.y });
-        });
-
-        leafletMarker.on("mouseout", () => {
-          setHoverCard(null);
-        });
-
-        leafletMarker.on("click", () => {
-          setSelectedEvent(marker.event);
-        });
-      });
-
-      leafletMapRef.current = map;
-    };
-
-    setupMap().catch(() => undefined);
-
-    return () => {
-      cancelled = true;
-      leafletMapRef.current?.remove();
-      leafletMapRef.current = null;
-    };
-  }, [markers]);
+  const [zoom, setZoom] = useState(1);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
 
   if (!markers.length) {
     return (
@@ -216,33 +160,111 @@ export function CityMapView({ events }: { events: EventCardDto[] }) {
     );
   }
 
-  const eventToDisplay = hoverCard?.event ?? selectedEvent ?? markers[0].event;
+  const activeEventId = hoveredEventId ?? selectedEventId ?? markers[0]?.id;
+  const activeMarker = markers.find((marker) => marker.id === activeEventId) ?? markers[0];
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-xl border border-border bg-card/80 p-3" data-testid="map-map-view">
-      <div className="h-full w-full overflow-hidden rounded-lg" ref={mapRef} data-testid="leaflet-map-canvas" />
+      <div className="pointer-events-none absolute inset-3 rounded-lg bg-gradient-to-b from-[#E8F5FF] via-[#F6FBFF] to-[#EEF8FF]" />
 
-      {hoverCard ? (
-        <div
-          className="pointer-events-none absolute z-[1000] max-w-sm -translate-y-full rounded-md border border-border bg-background/95 p-2 shadow-lg"
-          style={{ left: hoverCard.x + 22, top: hoverCard.y + 12 }}
-          data-testid="map-hover-tooltip"
+      <div className="absolute right-5 top-5 z-20 flex gap-2" data-testid="map-zoom-controls">
+        <button
+          type="button"
+          className="rounded-md border border-border bg-background/95 px-2 py-1 text-sm font-semibold shadow-sm"
+          onClick={() => setZoom((current) => clamp(current + 0.2, 1, 2.6))}
+          aria-label="Zoom in"
+          data-testid="map-zoom-in"
         >
-          <p className="text-xs font-medium text-muted-foreground">{hoverCard.event.category ?? "General"}</p>
-          <p className="text-sm font-semibold text-foreground">{hoverCard.event.title}</p>
-          <p className="text-xs text-muted-foreground">{hoverCard.event.city}</p>
-        </div>
-      ) : null}
+          +
+        </button>
+        <button
+          type="button"
+          className="rounded-md border border-border bg-background/95 px-2 py-1 text-sm font-semibold shadow-sm"
+          onClick={() => setZoom((current) => clamp(current - 0.2, 1, 2.6))}
+          aria-label="Zoom out"
+          data-testid="map-zoom-out"
+        >
+          −
+        </button>
+      </div>
 
-      <div className="absolute bottom-5 left-5 z-[900] max-w-md rounded-lg border border-border bg-background/95 p-3 shadow-md" data-testid="map-event-tooltip">
-        <p className="text-xs uppercase tracking-wide text-muted-foreground">{eventToDisplay.category ?? "General"}</p>
-        <p className="text-base font-semibold text-foreground">{eventToDisplay.title}</p>
-        <p className="text-sm text-muted-foreground">{eventToDisplay.city}{eventToDisplay.venueName ? ` · ${eventToDisplay.venueName}` : ""}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{formatEventTime(eventToDisplay.startDateTime)}</p>
-        {eventToDisplay.summary ? <p className="mt-2 text-sm leading-relaxed text-foreground/90">{eventToDisplay.summary}</p> : null}
+      <div className="absolute inset-3 overflow-hidden rounded-lg">
+        <div className="relative h-full w-full origin-center transition-transform duration-150" style={{ transform: `scale(${zoom})` }}>
+          <svg viewBox="0 0 1000 620" className="absolute inset-0 h-full w-full">
+            <defs>
+              <linearGradient id="bgSea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#D6EEFF" />
+                <stop offset="100%" stopColor="#BFDFFF" />
+              </linearGradient>
+              <linearGradient id="bgLand" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#A6CF87" />
+                <stop offset="65%" stopColor="#8CBE72" />
+                <stop offset="100%" stopColor="#6EAB5D" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="1000" height="620" rx="22" fill="url(#bgSea)" />
+            <path
+              d="M88 320l35-58 53-18 44-52 78-23 70 10 58-23 54-12 84 10 73 35 69-2 48 24 52-4 52 25 72 5 65 32 26 43-18 36 28 42-37 36-75 17-66-4-75 26-66-8-67 19-72-16-43 9-67-15-57-35-61-19-69-1-56-27-50-42z"
+              fill="url(#bgLand)"
+              stroke="#3B7642"
+              strokeWidth="6"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M175 315l70-45 99-17 80-34 129 15 93 30 114 4 89 30"
+              fill="none"
+              stroke="#6EA95E"
+              strokeWidth="4"
+              opacity="0.45"
+            />
+            <path
+              d="M790 214c56 20 111 65 118 128 8 73-35 149-114 201"
+              fill="none"
+              stroke="#9ED0FB"
+              strokeWidth="18"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {markers.map((marker, index) => {
+            const isActive = marker.id === activeMarker.id;
+
+            return (
+              <button
+                key={`${marker.id}-${index}`}
+                type="button"
+                className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-1 transition-transform ${isActive ? "scale-110" : "hover:scale-105"}`}
+                style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
+                title={`${marker.event.title} (${marker.event.city})`}
+                onMouseEnter={() => setHoveredEventId(marker.id)}
+                onMouseLeave={() => setHoveredEventId(null)}
+                onFocus={() => setHoveredEventId(marker.id)}
+                onBlur={() => setHoveredEventId(null)}
+                onClick={() => setSelectedEventId(marker.id)}
+                data-testid={`map-marker-${index + 1}`}
+              >
+                <span
+                  className={`grid h-8 w-8 place-items-center rounded-full bg-background/90 text-lg shadow-md ring-2 ${marker.ringClass}`}
+                  style={{ color: marker.color }}
+                  aria-hidden="true"
+                >
+                  📍
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="absolute bottom-5 left-5 z-20 max-w-md rounded-lg border border-border bg-background/95 p-3 shadow-md" data-testid="map-event-tooltip">
+        <p className="text-xs uppercase tracking-wide text-muted-foreground">{activeMarker.event.category ?? "General"}</p>
+        <p className="text-base font-semibold text-foreground">{activeMarker.event.title}</p>
+        <p className="text-sm text-muted-foreground">{activeMarker.event.city}{activeMarker.event.venueName ? ` · ${activeMarker.event.venueName}` : ""}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{formatEventTime(activeMarker.event.startDateTime)}</p>
+        {activeMarker.event.summary ? <p className="mt-2 text-sm leading-relaxed text-foreground/90">{activeMarker.event.summary}</p> : null}
         <p className="mt-2 text-xs text-muted-foreground">
-          {eventToDisplay.isFree ? "Free event" : "Paid event"}
-          {eventToDisplay.sourceName ? ` · Source: ${eventToDisplay.sourceName}` : ""}
+          {activeMarker.event.isFree ? "Free event" : "Paid event"}
+          {activeMarker.event.sourceName ? ` · Source: ${activeMarker.event.sourceName}` : ""}
         </p>
       </div>
     </div>
