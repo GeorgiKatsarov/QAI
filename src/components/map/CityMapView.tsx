@@ -1,16 +1,15 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import type { EventCardDto } from "@/lib/mappers/events";
 
 const cityCoordinates: Record<string, { latitude: number; longitude: number }> = {
   Sofia: { latitude: 42.6977, longitude: 23.3219 },
   Plovdiv: { latitude: 42.1354, longitude: 24.7453 },
   Varna: { latitude: 43.2141, longitude: 27.9147 },
-};
-
-type EventMarker = {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
+  Burgas: { latitude: 42.5048, longitude: 27.4626 },
+  Ruse: { latitude: 43.848, longitude: 25.954 },
+  "Stara Zagora": { latitude: 42.4258, longitude: 25.6345 },
 };
 
 const BULGARIA_BOUNDS = {
@@ -18,6 +17,24 @@ const BULGARIA_BOUNDS = {
   maxLatitude: 44.25,
   minLongitude: 22.3,
   maxLongitude: 28.7,
+};
+
+const categoryStyles: Record<string, { color: string; ring: string }> = {
+  music: { color: "#8B5CF6", ring: "ring-violet-200" },
+  art: { color: "#EC4899", ring: "ring-pink-200" },
+  food: { color: "#F59E0B", ring: "ring-amber-200" },
+  sports: { color: "#10B981", ring: "ring-emerald-200" },
+  family: { color: "#3B82F6", ring: "ring-sky-200" },
+  default: { color: "#64748B", ring: "ring-slate-200" },
+};
+
+type EventMarker = {
+  id: string;
+  x: number;
+  y: number;
+  event: EventCardDto;
+  color: string;
+  ringClass: string;
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -36,6 +53,14 @@ function toMapCoordinates(latitude: number, longitude: number) {
   };
 }
 
+function formatEventTime(dateString: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/Sofia",
+  }).format(new Date(dateString));
+}
+
 function buildEventMarkers(events: EventCardDto[]): EventMarker[] {
   return events.map((event, index) => {
     const cityCoords = cityCoordinates[event.city];
@@ -43,18 +68,24 @@ function buildEventMarkers(events: EventCardDto[]): EventMarker[] {
     const longitude = event.longitude ?? cityCoords?.longitude ?? 23 + (index % 8) * 0.35;
     const offset = ((index % 5) - 2) * 0.4;
     const { x, y } = toMapCoordinates(latitude + offset * 0.03, longitude + offset * 0.03);
+    const style = categoryStyles[event.categorySlug ?? ""] ?? categoryStyles.default;
 
     return {
       id: event.id,
-      label: `${event.title} (${event.city})`,
       x,
       y,
+      event,
+      color: style.color,
+      ringClass: style.ring,
     };
   });
 }
 
 export function CityMapView({ events }: { events: EventCardDto[] }) {
-  const markers = buildEventMarkers(events);
+  const markers = useMemo(() => buildEventMarkers(events), [events]);
+  const [zoom, setZoom] = useState(1);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
 
   if (!markers.length) {
     return (
@@ -64,23 +95,102 @@ export function CityMapView({ events }: { events: EventCardDto[] }) {
     );
   }
 
+  const activeEventId = hoveredEventId ?? selectedEventId ?? markers[0]?.id;
+  const activeMarker = markers.find((marker) => marker.id === activeEventId) ?? markers[0];
+
   return (
-    <div className="relative h-full w-full rounded-lg border border-border bg-card/80 p-3" data-testid="map-map-view">
-      <div className="absolute inset-3 rounded-md bg-gradient-to-br from-[#E6F2FF] via-[#F4FBFF] to-[#EAF7FF]" />
-      <div className="relative h-full w-full">
-        {markers.map((marker, index) => (
-          <div
-            key={`${marker.id}-${index}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
-            title={marker.label}
-            data-testid={`map-marker-${index + 1}`}
-          >
-            <div className="rounded-full bg-background/95 px-1.5 py-1 text-base shadow-sm ring-1 ring-border">
-              📍
-            </div>
-          </div>
-        ))}
+    <div className="relative h-full w-full overflow-hidden rounded-xl border border-border bg-card/80 p-3" data-testid="map-map-view">
+      <div className="pointer-events-none absolute inset-3 rounded-lg bg-gradient-to-b from-[#E8F5FF] via-[#F6FBFF] to-[#EEF8FF]" />
+
+      <div className="absolute right-5 top-5 z-20 flex gap-2" data-testid="map-zoom-controls">
+        <button
+          type="button"
+          className="rounded-md border border-border bg-background/95 px-2 py-1 text-sm font-semibold shadow-sm"
+          onClick={() => setZoom((current) => clamp(current + 0.2, 1, 2.6))}
+          aria-label="Zoom in"
+          data-testid="map-zoom-in"
+        >
+          +
+        </button>
+        <button
+          type="button"
+          className="rounded-md border border-border bg-background/95 px-2 py-1 text-sm font-semibold shadow-sm"
+          onClick={() => setZoom((current) => clamp(current - 0.2, 1, 2.6))}
+          aria-label="Zoom out"
+          data-testid="map-zoom-out"
+        >
+          −
+        </button>
+      </div>
+
+      <div className="absolute inset-3 overflow-hidden rounded-lg">
+        <div className="relative h-full w-full origin-center transition-transform duration-150" style={{ transform: `scale(${zoom})` }}>
+          <svg viewBox="0 0 1000 620" className="absolute inset-0 h-full w-full">
+            <defs>
+              <linearGradient id="bgSea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#D6EEFF" />
+                <stop offset="100%" stopColor="#BFDFFF" />
+              </linearGradient>
+              <linearGradient id="bgLand" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#A8D08D" />
+                <stop offset="65%" stopColor="#8FC379" />
+                <stop offset="100%" stopColor="#74B764" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="1000" height="620" rx="22" fill="url(#bgSea)" />
+            <path
+              d="M84 315l40-56 48-12 36-54 74-26 61 12 62-39 94 8 47 34 55-8 72 42 90 10 63 71-22 42 35 49-44 35-111 10-71 34-85-14-45 24-78-7-58-45-86-26-76-3-71-55z"
+              fill="url(#bgLand)"
+              stroke="#3F7A3F"
+              strokeWidth="8"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M772 205c60 20 114 68 120 136 8 75-40 153-124 201"
+              fill="none"
+              stroke="#9ED0FB"
+              strokeWidth="22"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {markers.map((marker, index) => {
+            const isActive = marker.id === activeMarker.id;
+
+            return (
+              <button
+                key={`${marker.id}-${index}`}
+                type="button"
+                className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-1 transition-transform ${isActive ? "scale-110" : "hover:scale-105"}`}
+                style={{ left: `${marker.x}%`, top: `${marker.y}%` }}
+                title={`${marker.event.title} (${marker.event.city})`}
+                onMouseEnter={() => setHoveredEventId(marker.id)}
+                onMouseLeave={() => setHoveredEventId(null)}
+                onFocus={() => setHoveredEventId(marker.id)}
+                onBlur={() => setHoveredEventId(null)}
+                onClick={() => setSelectedEventId(marker.id)}
+                data-testid={`map-marker-${index + 1}`}
+              >
+                <span
+                  className={`block h-4 w-4 rounded-full ring-4 ${marker.ringClass} shadow-md`}
+                  style={{ backgroundColor: marker.color }}
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="absolute bottom-5 left-5 z-20 max-w-md rounded-lg border border-border bg-background/95 p-3 shadow-md" data-testid="map-event-tooltip">
+        <p className="text-xs uppercase tracking-wide text-muted-foreground">{activeMarker.event.category ?? "General"}</p>
+        <p className="text-base font-semibold text-foreground">{activeMarker.event.title}</p>
+        <p className="text-sm text-muted-foreground">{activeMarker.event.city}{activeMarker.event.venueName ? ` · ${activeMarker.event.venueName}` : ""}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{formatEventTime(activeMarker.event.startDateTime)}</p>
+        {activeMarker.event.summary ? <p className="mt-2 text-sm leading-relaxed text-foreground/90">{activeMarker.event.summary}</p> : null}
+        <p className="mt-2 text-xs text-muted-foreground">
+          {activeMarker.event.isFree ? "Free event" : "Paid event"}
+          {activeMarker.event.sourceName ? ` · Source: ${activeMarker.event.sourceName}` : ""}
+        </p>
       </div>
     </div>
   );
