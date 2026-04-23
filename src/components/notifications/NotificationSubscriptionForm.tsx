@@ -16,7 +16,8 @@ export function NotificationSubscriptionForm() {
   const [unsubscribeToken, setUnsubscribeToken] = useState("");
 
   const form = useForm<NotificationSubscriptionInput>({
-    resolver: zodResolver(notificationSubscriptionSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(notificationSubscriptionSchema) as any,
     defaultValues: {
       email: "",
       cities: [],

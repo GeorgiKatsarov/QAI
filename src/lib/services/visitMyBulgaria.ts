@@ -117,20 +117,20 @@ export async function scrapeVisitMyBulgariaEvents(): Promise<EventCardDto[]> {
           id: `scraped-${slug}`,
           slug,
           title: card.title,
-          summary: card.summary,
+          summary: card.summary ?? null,
           city: location.city,
-          venueName: location.venueName,
+          venueName: location.venueName ?? null,
           startDateTime: new Date().toISOString(),
           latitude: location.latitude,
           longitude: location.longitude,
-          category: location.category,
-          categorySlug: location.categorySlug,
+          category: location.category ?? null,
+          categorySlug: location.categorySlug ?? null,
           sourceName: "Visit My Bulgaria",
-          sourceUrl,
+          sourceUrl: sourceUrl ?? null,
           isFree: false,
-        } satisfies EventCardDto;
+        } as EventCardDto;
       })
-      .filter((event): event is EventCardDto => Boolean(event));
+      .filter((event): event is EventCardDto => event !== null && event !== undefined);
 
   try {
     const response = await fetch(sourceUrl, {
