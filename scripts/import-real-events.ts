@@ -39,7 +39,30 @@ const sourceSeeds = {
 
 const tagNames = ["festival", "live-music", "food-market", "outdoor"] as const;
 
-const realEvents = [
+type RealEvent = {
+  slug: string;
+  title: string;
+  summary: string;
+  description: string;
+  startDateTime: string;
+  endDateTime: string;
+  venueName: string;
+  address: string;
+  city: string;
+  latitude: number;
+  longitude: number;
+  categorySlug: keyof typeof categorySeeds;
+  sourceKey: keyof typeof sourceSeeds;
+  sourceUrl: string;
+  imageUrl: string;
+  isFree: boolean;
+  isFamilyFriendly?: boolean;
+  isOutdoor?: boolean;
+  featured: boolean;
+  tags: string[];
+};
+
+const realEvents: RealEvent[] = [
   {
     slug: "bulgarian-folklore-festival-plovdiv-2026",
     title: "Bulgarian Folklore Festival - Plovdiv 2026",
@@ -158,7 +181,7 @@ const realEvents = [
     featured: true,
     tags: ["festival", "live-music"],
   },
-] as const;
+];
 
 async function ensureCategories() {
   const entries = await Promise.all(

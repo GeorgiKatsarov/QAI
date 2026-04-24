@@ -52,6 +52,12 @@ type ScrapedEvent = EventPageDetails & {
   tags: string[];
 };
 
+type PersistableScrapedEvent = ScrapedEvent & {
+  address: string;
+  city: string;
+  startDateTime: Date;
+};
+
 const categorySeeds = {
   music: { name: "Music", color: "#7c3aed" },
   art: { name: "Art & Exhibitions", color: "#db2777" },
@@ -723,7 +729,7 @@ function looksLikeEventAnnouncement(title: string, description: string) {
   );
 }
 
-async function scrapeArticle(articleUrl: string): Promise<ScrapedEvent | null> {
+async function scrapeArticle(articleUrl: string): Promise<PersistableScrapedEvent | null> {
   const html = await fetchText(articleUrl);
   const root = parse(html) as HtmlNode;
   const title = normalizeWhitespace(
@@ -883,7 +889,7 @@ async function main() {
   const postUrls = await getPostUrls();
   console.log(`Found ${postUrls.length} recent posts to inspect.`);
 
-  const scrapedEvents: ScrapedEvent[] = [];
+  const scrapedEvents: PersistableScrapedEvent[] = [];
 
   for (const postUrl of postUrls) {
     try {
